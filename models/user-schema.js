@@ -26,6 +26,10 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
+    gender:{
+        type: String,
+        required: true,
+    },
     message: [{
         type: Schema.Types.ObjectId,
         ref: 'message',

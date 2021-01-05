@@ -9,7 +9,7 @@
 	<title>ADR Social Network</title>
 	<link rel="icon" href="images/fav.png" type="image/png" sizes="16x16">
 
-	<script src="../sign_up.js"></script>
+	<script src="../sign_upin.js"></script>
 
 	<link rel="stylesheet" href="css/main.min.css">
 	<link rel="stylesheet" href="css/style.css">
@@ -44,13 +44,14 @@
 
 							<form method="post">
 								<div class="form-group">
-									<input type="text" id="input" required="required" />
-									<label class="control-label" for="input">Username</label><i class="mtrl-select"></i>
+									<input type="text" id="login" required="required" />
+									<label class="control-label" for="input">Login</label><i class="mtrl-select"></i>
 								</div>
 								<div class="form-group">
-									<input type="password" required="required" />
-									<label class="control-label" for="input">Password</label><i class="mtrl-select"></i>
+									<input type="password" id="password" required="required" />
+									<label class="control-label" for="input">Password</label><i class="mtrl-select"></i>									
 								</div>
+								<p id="infoLoginUser" style="color:red;"></p>
 								<div class="checkbox">
 									<label>
 										<input type="checkbox" checked="checked" /><i class="check-box"></i>Always
@@ -59,7 +60,7 @@
 								</div>
 								<a href="#" title="" class="forgot-pwd">Forgot Password?</a>
 								<div class="submit-btns">
-									<button class="mtr-btn signin" type="button"><span>Login</span></button>
+									<button class="mtr-btn signin" onclick="loginUser()" type="button"><span>Login</span></button>
 									<button class="mtr-btn signup" type="button"><span>Register</span></button>
 								</div>
 							</form>
@@ -71,36 +72,41 @@
 									<input id="name" type="text" required="required" />
 									<label class="control-label" for="input">First & Last Name</label><i
 										class="mtrl-select"></i>
+									<p id="infoName" style="color:red;"></p>
 								</div>
 								<div class="form-group">
 									<input id="phoneNumber" type="number" required="required" />
 									<label class="control-label" for="input">Phone Number</label><i
 										class="mtrl-select"></i>
+										<p id="infoPhone" style="color:red;"></p>
 								</div>
 								<div class="form-group">
 									<input id="birth" type="date" required="required" />
-									<label class="control-label" for="input">Birth</label><i
-										class="mtrl-select"></i>
+									<label class="control-label" for="input">Birth</label><i class="mtrl-select"></i>
+									<p id="infoBirth" style="color:red;"></p>
 								</div>
 								<div class="form-group">
 									<input id="login" type="text" required="required" />
 									<label class="control-label" for="input">Login</label><i class="mtrl-select"></i>
+									<p id="infoLogin" style="color:red;"></p>
 								</div>
 								<div class="form-group">
 									<input id="password" type="password" required="required" />
 									<label class="control-label" for="input">Password</label><i class="mtrl-select"></i>
+									<p id="infoPassword" style="color:red;"></p>
 								</div>
-								
+
 								<div class="form-radio">
 									<div class="radio">
 										<label>
-											<input type="radio" name="radio" checked="checked" /><i
+											<input id="male" type="radio" name="radio" checked="checked" /><i
 												class="check-box"></i>Male
 										</label>
 									</div>
 									<div class="radio">
 										<label>
-											<input type="radio" name="radio" /><i class="check-box"></i>Female
+											<input id="female" type="radio" name="radio" /><i
+												class="check-box"></i>Female
 										</label>
 									</div>
 								</div>
@@ -110,6 +116,7 @@
 											href="https://wpkixx.com/cdn-cgi/l/email-protection" class="__cf_email__"
 											data-cfemail="6c29010d05002c">[email&#160;protected]</a></label><i
 										class="mtrl-select"></i>
+									<p id="infoEmail" style="color:red;"></p>
 								</div>
 								<div class="checkbox">
 									<label>
@@ -119,7 +126,8 @@
 								</div>
 								<a href="#" title="" class="already-have">Already have an account</a>
 								<div class="submit-btns">
-									<button class="mtr-btn signup" onclick="registerUser()"  type="button"><span>Register</span></button>
+									<button class="mtr-btn signup" onclick="registerUser()"
+										type="button"><span>Register</span></button>
 								</div>
 							</form>
 						</div>

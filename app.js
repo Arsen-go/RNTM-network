@@ -23,3 +23,5 @@ app.listen(3000, () => {
 app.get("/", () => { });
 
 app.post("/registerUser",signUpRouter.addUser);
+
+app.post("/loginUser", signUpRouter.loginUser);
