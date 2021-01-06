@@ -47,7 +47,10 @@ const userSchema = new Schema({
     }],
     friendRequest: [{
         type: Schema.Types.ObjectId,
-    }]
+    }],
+    online: {
+        type: Boolean
+    }
 })
 
 const User = mongoose.model('userschema', userSchema)

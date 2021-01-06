@@ -1,4 +1,5 @@
 function registerUser() {
+console.log(createUserObject())
   if (checkInputParams()) {
     fetch("/registerUser", {
       method: "POST",
@@ -8,6 +9,7 @@ function registerUser() {
         //xaccesstoken: localStorage.getItem("authToken"),
         Accept: "application/json",
       },
+
       body: JSON.stringify(createUserObject()),
     }).then((res) => {
       return res.json();
@@ -32,6 +34,7 @@ function createUserObject() {
     password: document.getElementById("password").value,
     email: document.getElementById("email").value,
     gender: getGender(),
+    online:false
   }
   return obj;
 }
@@ -57,6 +60,7 @@ function checkInputParams() {
   }
   // phone number checker is not finished
   let phoneValid = /^\d{9}$/;
+  
   if (!phoneNumber.value.match(phoneValid)) {
     infoPhone.innerHTML = "Phone number is not valid";
     ++check;
@@ -78,8 +82,9 @@ function checkInputParams() {
     infoLogin.innerHTML = " ";
   }
 
-  let passValid = /^[A-Za-z]\w{7,20}$/;
-  if (!password.value.match(passValid)) {
+  let passValid = /^[A-Za-z]{4,10}$/;
+  
+  if (!passValid.test(password.value)) {
     infoPassword.innerHTML = "Password must contain only characters, numeric digits, underscore and first character must be a letter";
     ++check;
   } else {
@@ -98,7 +103,7 @@ function checkInputParams() {
 function loginUser() {
   let obj = {
     login: document.getElementById("login").value,
-    password: document.getElementById("password").value,
+    password: document.getElementById("password").value
   }
   fetch("/loginUser", {
     method: "POST",
@@ -112,6 +117,8 @@ function loginUser() {
     return res.json();
   })
     .then((obj) => {
+     console.log(obj)
+     alert("obj")
       if (obj.log) {
         localStorage.setItem("authToken", obj.token);
         localStorage.setItem("email", obj.email);

@@ -16,9 +16,18 @@ class SignUpRouter {
                     console.log("email exsist");
                     res.json({ info: "Email exsist: try another" });
                 }
+                
                 let hashPassword = hash(req.body.password);
                 req.body.password = hashPassword;
                 await signUpController.insertUser(req.body);
+                // let user = req.body
+                // await fetch('/newsfeed',{
+                //     method: "POST",
+                // headers: {
+                //  "Content-Type": "application/json"
+                // },
+                // body: JSON.stringify(user)
+                // }).then(res=>res.json()).catch(err=>console.log(err))
                 res.json({ result: true });
             } catch (err) {
                 console.log("error on checking password: user password " + err);
