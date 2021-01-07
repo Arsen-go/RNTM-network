@@ -1,5 +1,7 @@
+/* eslint-disable */
 function registerUser() {
-console.log(createUserObject())
+  console.log(createUserObject())
+  alert(checkInputParams())
   if (checkInputParams()) {
     fetch("/registerUser", {
       method: "POST",
@@ -30,11 +32,11 @@ function createUserObject() {
     name: document.getElementById("name").value,
     phone: document.getElementById("phoneNumber").value,
     birth: document.getElementById("birth").value,
-    login: document.getElementById("login").value,
-    password: document.getElementById("password").value,
+    login: document.getElementById("loginRegist").value,
+    password: document.getElementById("passwordRegist").value,
     email: document.getElementById("email").value,
     gender: getGender(),
-    online:false
+    online: true
   }
   return obj;
 }
@@ -48,56 +50,62 @@ function getGender() {
 }
 
 function checkInputParams() {
-  let check = 0;
+  let checkName = 0;
   if (!document.getElementById("name").value.length) {
     infoName.innerHTML = "Name is required";
-    ++check;
+    ++checkName;
   } else if (document.getElementById("name").value.length <= 4) {
     infoName.innerHTML = "Name is too short";
-    ++check;
+    ++checkName;
   } else {
+    checkName = 0;
     infoName.innerHTML = " ";
   }
   // phone number checker is not finished
   let phoneValid = /^\d{9}$/;
-  
+  let checkPhone = 0;
   if (!phoneNumber.value.match(phoneValid)) {
     infoPhone.innerHTML = "Phone number is not valid";
-    ++check;
+    ++checkPhone;
   } else {
+    checkPhone = 0;
     infoPhone.innerHTML = " ";
   }
-
+  let checkBirth = 0;
   if (!document.getElementById("birth").value.length) {
     infoBirth.innerHTML = "Birth is required";
-    ++check;
+    ++checkBirth;
   } else {
+    checkBirth = 0;
     infoBirth.innerHTML = " ";
   }
-
-  if (document.getElementById("login").value.length <= 4) {
+  let checkLogin = 0;
+  if (document.getElementById("loginRegist").value.length <= 4) {
     infoLogin.innerHTML = "Login must be not less than 5 charachter!";
-    ++check;
+    ++checkLogin;
   } else {
+    checkLogin = 0;
     infoLogin.innerHTML = " ";
   }
 
   let passValid = /^[A-Za-z]{4,10}$/;
-  
-  if (!passValid.test(password.value)) {
-    infoPassword.innerHTML = "Password must contain only characters, numeric digits, underscore and first character must be a letter";
-    ++check;
+  let checkPassword = 0;
+  if (!passValid.test(passwordRegist.value)) {
+    infoPassword.innerHTML = "Password must contain only characters and at least 4 charachters";
+    ++checkPassword;
   } else {
+    checkPassword = 0;
     infoPassword.innerHTML = " ";
   }
-
+  let checkEmail = 0;
   if (!(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(email.value))) {
     infoEmail.innerHTML = "Invalid Email address";
-    ++check;
+    ++checkEmail;
   } else {
+    checkEmail = 0;
     infoEmail.innerHTML = " ";
   }
-  return check === 0;
+  return (checkName === 0 && checkPhone === 0 && checkPassword === 0 && checkLogin === 0 && checkBirth === 0 && checkEmail === 0);
 }
 
 function loginUser() {
@@ -117,14 +125,14 @@ function loginUser() {
     return res.json();
   })
     .then((obj) => {
-     console.log(obj)
-     alert("obj")
+      console.log(obj)
+      alert("obj")
       if (obj.log) {
         localStorage.setItem("authToken", obj.token);
         localStorage.setItem("email", obj.email);
         localStorage.setItem("userId", obj.userId);
         window.location.href = "./newsfeed.html";
-      }else{
+      } else {
         infoLoginUser.innerHTML = obj.info;
       }
 

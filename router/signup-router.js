@@ -6,9 +6,10 @@ const jwt = require("jsonwebtoken");
 
 class SignUpRouter {
     async addUser(req, res) {
+        console.log(schema.validate(req.body).error)
         if (schema.validate(req.body).error) {
             console.log("user validation error")
-            res.json({ error: schema.validate(req.body).error.message });
+            res.json({ error: schema.validate(req.body).error});
         } else {
             try {
                 let data = await User.find({ email: req.body.email });
@@ -20,14 +21,6 @@ class SignUpRouter {
                 let hashPassword = hash(req.body.password);
                 req.body.password = hashPassword;
                 await signUpController.insertUser(req.body);
-                // let user = req.body
-                // await fetch('/newsfeed',{
-                //     method: "POST",
-                // headers: {
-                //  "Content-Type": "application/json"
-                // },
-                // body: JSON.stringify(user)
-                // }).then(res=>res.json()).catch(err=>console.log(err))
                 res.json({ result: true });
             } catch (err) {
                 console.log("error on checking password: user password " + err);
