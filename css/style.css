@@ -1193,6 +1193,7 @@ header.sticky {
     margin-bottom: 20px;
     position: relative;
     width: 100%;
+    cursor: pointer;
 }
 
 .sidebar .widget li:last-child {
@@ -1988,6 +1989,9 @@ li.post-comment .comet-avatar {
     margin-top: 20px;
     max-height: 450px;
     position: relative;
+}
+#people-list li {
+    cursor: pointer;
 }
 
 #people-list figure {

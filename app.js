@@ -8,16 +8,58 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 const path = require("path");
 const User = require('./models/user-schema');
-
-io.on('connection',socket=>{
-   
-    socket.on('join',async data=>{
-      let users = await User.find().lean()
-      socket.emit('onlineUsers',users)
-    })
+let onlineUserArray = []
+let user = User.find({online:true}).lean().select({message:1,photo:1,name:1}).exec(async function (err,result) {
+  onlineUserArray = await [...result]
 })
+
+function offlineUser(userId) {
+  User.updateOne({_id:userId},{ $set: {online: false }},function(err, res) {
+    if (err) throw err;
+    console.log("1 document updated...");
+  })
+}
+function onlineUser() {
+  User.find({online:true}).lean().select({message:1,photo:1,name:1}).exec(async function (err,result) {
+    onlineUserArray = await [...result]
+  })
+}
+
+io.on('connection',socket=>{ 
+   console.log('Connected')
+   socket.emit('join',onlineUserArray)
+   
+   socket.on('openChat',(userId)=>{
+    let setUser = findUser(userId)
+    console.log('set',setUser)
+      socket.emit('openChat',setUser)
+
+     console.log('userOpen')
+   })
+
+   socket.on('Offline',(userId)=>{
+    console.log("userId",userId)
+    offlineUser(userId)
+    //onlineUser()
+  //socket.emit('join',onlineUserArray)
+  })
+   socket.on('disconnect',()=>{
+    onlineUser()
+    socket.emit('join',onlineUserArray)
+    
+    })
+   
+})
+ function findUser(userId) {
+  let user = [] 
+   let Usser = User.findOne({_id:userId}).select({name:1,photo:1,message:1})
+   console.log(Usser.name)
+  return user
+}
 // controllers
-const signUpRouter = require("./router/signup-router")
+const signUpRouter = require("./router/signup-router");
+const { schema} = require("joi");
+const { message } = require("./validate/joi");
 
 // middlwares
 app.use(express.json())
@@ -44,6 +86,6 @@ app.post("/loginUser", (req,res) => {
       })
     // user.online = true;
     // user.save()
-    console.log('user',user)
+    //console.log('user',user)
    // socket.emit('onlineUsers',req.body)
 });
