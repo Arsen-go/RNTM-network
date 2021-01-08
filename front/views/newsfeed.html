@@ -1273,13 +1273,13 @@
 										<div class="chat-box">
 											<div class="chat-head">
 												<span class="status f-online"></span>
-												<h6>Bucky Barnes</h6>
+												<h6 class="chatUserName">Bucky Barnes</h6>
 												<div class="more">
 												    <span class="close-mesage"><i class="ti-close"></i></span>
 												</div>
 											</div>
 											<div class="chat-list">
-												<ul>
+												<ul id="messageUl">
 													<li class="me">
 														<div class="chat-thumb"><img src="images/resources/chatlist1.jpg" alt=""></div>
 														<div class="notification-event">
@@ -1301,7 +1301,8 @@
 													
 												</ul>
 												<form class="text-box">
-													<textarea placeholder="Post enter to post..."></textarea>
+													<input id="messageText" placeholder="Post enter to post..." >
+													
 													<div class="add-smiles">
 														<span title="add icon" class="em em-expressionless"></span>
 													</div>
@@ -1319,7 +1320,7 @@
 														<i class="em em-rage"></i>
 														<i class="em em-stuck_out_tongue"></i>
 													</div>
-													<button type="submit"></button>
+													<button type="submit">send</button>
 												</form>
 											</div>
 										</div>

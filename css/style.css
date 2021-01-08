@@ -4762,9 +4762,7 @@ canvas {
 .chat-box {
     background: #fbfbfb none repeat scroll 0 0;
     border-radius: 3px;
-    bottom: -2px;
     position: absolute;
-    right: 100%;
     width: 300px;
     z-index: 9999999;
     transform: translate(40px) scale(0);
@@ -4779,6 +4777,7 @@ canvas {
     transform: translate(0) scale(1);
     opacity: 1;
     visibility: visible;
+    bottom: 0px;
 }
 
 .chat-head {
@@ -4922,13 +4921,7 @@ canvas {
     background: #f0f0f0;
 }
 
-.text-box > button {
-    opacity: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    visibility: hidden;
-}
+
 
 
 /*---- inbox page ---- */

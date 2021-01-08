@@ -1,5 +1,6 @@
 /* eslint-disable */
 function registerUser() {
+ 
   console.log(createUserObject())
   alert(checkInputParams())
   if (checkInputParams()) {
@@ -110,6 +111,7 @@ function checkInputParams() {
 
 function loginUser() {
   let obj = {
+    userId:localStorage.getItem('userId'),
     login: document.getElementById("login").value,
     password: document.getElementById("password").value
   }
