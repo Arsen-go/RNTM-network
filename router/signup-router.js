@@ -54,7 +54,7 @@ class SignUpRouter {
             return false;
         }
         token = jwt.sign({ userId: user._id, email: user.email, password: user.password }, "esim", {
-            expiresIn: "24h",
+            expiresIn: "124h",
         });
         res.json({ userId: user._id, email: user.email, token: token, tokenExpiration: 1, log: true });
     }

@@ -120,6 +120,7 @@ function loginUser() {
     headers: {
       "Content-Type": "application/json",
       xaccesstoken: localStorage.getItem("authToken"),
+      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
       Accept: "application/json",
     },
     body: JSON.stringify(obj),
@@ -133,6 +134,7 @@ function loginUser() {
         localStorage.setItem("authToken", obj.token);
         localStorage.setItem("email", obj.email);
         localStorage.setItem("userId", obj.userId);
+        sessionStorage.setItem("token",obj.token);
         window.location.href = "./newsfeed.html";
       } else {
         infoLoginUser.innerHTML = obj.info;
