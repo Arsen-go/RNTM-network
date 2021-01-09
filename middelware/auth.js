@@ -1,11 +1,34 @@
-//const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
-exports.verify = function(req, res, next) {
-    let accessToken = req.headers.xaccesstoken
-    console.log(req.headers)
-    //if there is no token stored in cookies, the request is unauthorized
-    if (!accessToken) {
-        return res.status(403).send()
+// exports.verify = (req, res, next) => {
+//     console.log(req)
+//     console.log(":");
+//     const authHeader = req.headers['authorization']
+//     const token = authHeader && authHeader.split(' ')[1]
+//     if (token == null) return res.sendStatus(401) // if there isn't any token
+  
+//     jwt.verify(token, "esim", (err) => {
+//       console.log(err)
+//       if (err) return res.sendStatus(403)
+//       req.user = user
+//       next() 
+//     })
+//   }
+
+exports.verifyToken = (req, res, next) => {
+  console.log(req.headers)
+    let token = req.cookies["x-access-token"];
+  
+    if (!token) {
+      return res.status(403).send({ message: "No token provided!" });
     }
-    next();
-}
+  
+    jwt.verify(token, "esim", (err, decoded) => {
+      if (err) {
+        return res.status(401).send({ message: "Unauthorized!" });
+      }
+      req.userObj = decoded;
+  
+      next();
+    });
+  };

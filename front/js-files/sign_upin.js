@@ -1,6 +1,7 @@
 /* eslint-disable */
+let registCode = 0;
 function registerUser() {
- 
+
   console.log(createUserObject())
   alert(checkInputParams())
   if (checkInputParams()) {
@@ -106,12 +107,12 @@ function checkInputParams() {
     checkEmail = 0;
     infoEmail.innerHTML = " ";
   }
-  return (checkName === 0 && checkPhone === 0 && checkPassword === 0 && checkLogin === 0 && checkBirth === 0 && checkEmail === 0);
+  return (regCode.value == registCode && checkName === 0 && checkPhone === 0 && checkPassword === 0 && checkLogin === 0 && checkBirth === 0 && checkEmail === 0);
 }
 
 function loginUser() {
   let obj = {
-    userId:localStorage.getItem('userId'),
+    userId: localStorage.getItem('userId'),
     login: document.getElementById("login").value,
     password: document.getElementById("password").value
   }
@@ -134,7 +135,7 @@ function loginUser() {
         localStorage.setItem("authToken", obj.token);
         localStorage.setItem("email", obj.email);
         localStorage.setItem("userId", obj.userId);
-        sessionStorage.setItem("token",obj.token);
+        sessionStorage.setItem("token", obj.token);
         window.location.href = "./newsfeed.html";
       } else {
         infoLoginUser.innerHTML = obj.info;
@@ -143,4 +144,28 @@ function loginUser() {
     }).catch((err) => {
       console.log(err);
     })
+}
+
+function sendEmail(e) {
+  fetch("/sendMail", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      email:document.getElementById("email").value,
+    }),
+  }).then((res) => {
+    return res.json();
+  })
+    .then((obj) => {
+      console.log(obj);
+      if(!obj.isSend){
+        infoEmail.innerHTML = "Something wrong with Email";
+      }else{
+        registCode = obj.registrationCode;
+      }
+    })
+    e.preventDefault();
 }

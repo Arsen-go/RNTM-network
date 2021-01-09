@@ -3,6 +3,7 @@ const schema = require("../validate/joi");
 const User = require("../models/user-schema");
 const { hash, checkPassword } = require("./helper/create_hash");
 const jwt = require("jsonwebtoken");
+const mail = require("./helper/send_mail");
 
 class SignUpRouter {
     async addUser(req, res) {
@@ -54,9 +55,13 @@ class SignUpRouter {
             return false;
         }
         token = jwt.sign({ userId: user._id, email: user.email, password: user.password }, "esim", {
-            expiresIn: "124h",
+            expiresIn: "24h",
         });
+        res.cookie("x-access-token",token);
         res.json({ userId: user._id, email: user.email, token: token, tokenExpiration: 1, log: true });
+    }
+    sendRegistCode(req,res) {        
+        mail.sendMail(req,res);
     }
 }
 

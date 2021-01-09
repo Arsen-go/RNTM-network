@@ -1,76 +1,69 @@
 <html>
 
 <head>
-    <script src="/delete-user.js"></script>
+    <script src="./admin.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+    <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
 </head>
 
 <body>
-    <html>
-
-    <head>
-        <script src="/delete-user.js"></script>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <script src="bootstrap/dist/js/bootstrap.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
-        <link rel="stylesheet" href="bootstrap/dist/css/bootstrap.min.css">
-    </head>
-
-    <body>
+    <div class="container">
         <div class="container">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-3">
-                        <ul class="nav nav-pills nav-stacked">
-                            <li class="active"><a href="landing.html"><i class="fa fa-home fa-fw"></i>Home</a></li>
-                            <li><a href="delete_ser.html"><i class="fa fa-list-alt fa-fw"></i>Delete</a></li>
-                            <li><a href="update_user.html"><i class="fa fa-bar-chart-o fa-fw"></i>Update</a></li>
-                            <li><a href="all_users.html"><i class="fa fa-file-o fa-fw"></i>User</a></li>
+            <div class="row">
+                <div class="col-md-3">
+                    <ul class="nav nav-pills nav-stacked">
+                        <li class="active"><a href="landing.html"><i class="fa fa-home fa-fw"></i>Home</a></li>
+                        <li><a href="delete_ser.html"><i class="fa fa-list-alt fa-fw"></i>Delete</a></li>
+                        <li><a href="update_user.html"><i class="fa fa-bar-chart-o fa-fw"></i>Update</a></li>
+                        <li><a href="all_users.html"><i class="fa fa-file-o fa-fw"></i>User</a></li>
 
-                        </ul>
-                    </div>
+                    </ul>
                 </div>
             </div>
-            <form id="form">
+        </div>
+        <form id="form">
 
 
-            </form>
+        </form>
 
 
 
-            <div class="container">
-                <h2>Table of all user</h2>
-                <p>Select and delete:</p>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Firstname</th>
-                            <th>Lastname</th>
-                            <th>Select</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbody">
+        <div class="container">
+            <h2>Table of all user</h2>
+            <p>Select and delete:</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Firstname</th>
+                        <th>Lastname</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody">
 
 
-                    </tbody>
-                </table>
-            </div>
-            <button class="btn btn-primary" id="deleteBtn">delete</button>
-            <style>
-                @import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
+                </tbody>
+            </table>
+        </div>
+        <button class="btn btn-primary" id="deleteBtn">delete</button>
+        <style>
+            @import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
 
-                body {
-                    margin-top: 20px;
-                }
+            body {
+                margin-top: 20px;
+            }
 
-                .fa-fw {
-                    width: 2em;
-                }
-            </style>
-    </body>
+            .fa-fw {
+                width: 2em;
+            }
+        </style>
+</body>
 
-    </html>
-    <!-- <form id="form">
+</html>
+<!-- <form id="form">
 <input type="checkbox" name="name" value="5fd8f32e8dff1b4140f09e50"/>form<br>
 </form>
 <button id="deleteBtn">delete</button>

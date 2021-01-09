@@ -7,22 +7,27 @@
 <body>
     <div id="loginForm">
         <div class="form-group">
-            <input id="userlogin" type="text" class="form-control" placeholder="login"/>
+            <input id="userlogin" type="text" class="form-control" placeholder="login" />
         </div><br>
         <div class="form-group">
-            <input id="userPassword" type="text" class="form-control" placeholder="password"/>
+            <input id="userPassword" type="password" class="form-control" placeholder="password" />
         </div>
         <h3 id="h3"></h3>
         <button id="loginBtn" type="button" class="btnSubmit">Log In</button>
     </div>
     <script>
-        document.getElementById("loginBtn").addEventListener('click',()=>{
-             if (userlogin.value === "zaqxswcde" && userPassword.value === "qazwsxedc") {
+        document.getElementById("loginBtn").addEventListener('click', () => {
+            if (userlogin.value === "zaqxswcde" && userPassword.value === "qazwsxedc") {
                 window.location.href = "./admin.html";
             }
         })
     </script>
     <style>
+        body {
+            background-image: url('images/admin.jpg');
+            background-repeat: no-repeat;
+        }
+
         .note {
             text-align: center;
             height: 80px;
@@ -38,7 +43,7 @@
             margin-bottom: 2%;
         }
 
-        .form-group{
+        .form-group {
             margin-left: 40%;
             margin-top: 20px;
             width: 100px;
@@ -58,8 +63,6 @@
             color: #fff;
             margin-left: 37%;
         }
-
-        
     </style>
 </body>
 

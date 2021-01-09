@@ -6,7 +6,7 @@
     <html>
 
     <head>
-        <script src="/all-users.js"></script>
+        <script src="./admin.js"></script>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <script src="bootstrap/dist/js/bootstrap.min.js"></script>
@@ -42,8 +42,8 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
+                        <th>Name</th>
+                        <th>Email</th>
                         <th>Select</th>
                     </tr>
                 </thead>
@@ -52,15 +52,15 @@
 
                 </tbody>
             </table>
+            <button class="btn btn-primary" id="showCard">Show something</button>
         </div>
-
-        <button class="btn btn-primary" id="showCard">Show something</button>
 
         <style>
             @import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
 
             body {
                 margin-top: 20px;
+                background-image: url('admin.jpg');
             }
 
             .fa-fw {

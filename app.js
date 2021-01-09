@@ -8,13 +8,15 @@ const bodyParser = require("body-parser");
 const auth = require("./middelware/auth");
 const User = require('./models/user-schema');
 const path=require("path");
+const controlMessage = require("./controller/control_message");
+const adminRouter = require("./router/admin_router");
 // controllers
 const signUpRouter = require("./router/signup-router");
-
+const cookieParser = require("cookie-parser");
+app.use(cookieParser());
 // middlwares
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: false }));
-//app.use(auth.verify);
 // for public
 app.use(express.static("./front/views"));
 app.use(express.static("./front/views/fonts"));
@@ -29,15 +31,19 @@ server.listen(3000, () => {
 });
 
 // Restful API`s
-app.get("/", () => { });
-app.use("/landing.html",auth.verify);
+app.get("/",auth.verifyToken, () => { });
+
 app.post("/registerUser",signUpRouter.addUser);
 
 app.post("/loginUser", (req, res) => {
   signUpRouter.loginUser(req, res)
   updateOnlineToTrue(req.body.userId);
 });
+// app.use(auth.verifyToken);
 
+app.post("/sendMail",signUpRouter.sendRegistCode);
+
+app.get("/admin/showUsers",adminRouter.showAllUsers);
 // sockets
 io.on('connection', async socket => {
    console.log('Connected')
@@ -67,9 +73,27 @@ io.on('connection', async socket => {
 
    socket.on('message',async(data)=>{
     let {userId,msg} = data
+    console.log(data)
     let user = await findUser(userId)
     socket.emit('message',{user,msg})
    })
+
+   //arsen code
+   socket.on('armessage', (msg) => {
+
+    controlMessage.add(msg);
+    io.emit('argmessage', msg);
+  });
+  socket.on('arclear', (msg) => {
+    controlMessage.del(msg);
+
+  })
+  socket.on('aroldMessages',async (fromTo) => {
+    let result = await controlMessage.getAllMessages(fromTo);
+    io.emit('argetOldMessages',result);
+    console.log(result)
+  })
+// arsen code end
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
