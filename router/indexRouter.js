@@ -3,9 +3,6 @@ const { homePage,loginPage,profilePage,userFriends, userMessages } = require('..
 const {verifyToken} = require('../middelware/auth')
 
 const router = express.Router()
-// router.route("/").get(homePage,verifyToken).post();
-// router.route("/home").get(homePage,verifyToken).post();
-// router.route("/login").get(loginPage);
 router.get('/',verifyToken,homePage)
 router.get('/home',verifyToken,homePage)
 router.get('/login',loginPage)
