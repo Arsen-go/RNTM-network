@@ -15,11 +15,13 @@ const jwt = require('jsonwebtoken');
 //     })
 //   }
 
-exports.verifyToken = (req, res, next) => {
-  console.log(req.headers)
+verifyToken = (req, res, next) => {
+  //console.log(req.headers)
     let token = req.cookies["x-access-token"];
+    
   
     if (!token) {
+      res.redirect('/login')
       return res.status(403).send({ message: "No token provided!" });
     }
   
@@ -32,3 +34,6 @@ exports.verifyToken = (req, res, next) => {
       next();
     });
   };
+  module.exports = {
+    verifyToken
+  }

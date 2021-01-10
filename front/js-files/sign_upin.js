@@ -136,7 +136,7 @@ function loginUser() {
         localStorage.setItem("email", obj.email);
         localStorage.setItem("userId", obj.userId);
         sessionStorage.setItem("token", obj.token);
-        window.location.href = "./newsfeed.html";
+        window.location.href = "./home";
       } else {
         infoLoginUser.innerHTML = obj.info;
       }

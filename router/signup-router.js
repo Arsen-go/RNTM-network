@@ -59,6 +59,7 @@ class SignUpRouter {
         });
         res.cookie("x-access-token",token);
         res.json({ userId: user._id, email: user.email, token: token, tokenExpiration: 1, log: true });
+        //res.sendFile(__dirname + "/views/" + "newsfeed.html")
     }
     sendRegistCode(req,res) {        
         mail.sendMail(req,res);

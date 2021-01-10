@@ -5,14 +5,18 @@ const server = http.createServer(app)
 const socket = require('socket.io')
 const io = socket(server)
 const bodyParser = require("body-parser");
-const auth = require("./middelware/auth");
+const {verifyToken}= require("./middelware/auth");
 const User = require('./models/user-schema');
 const path=require("path");
+const cons = require('consolidate');
 const controlMessage = require("./controller/control_message");
 const adminRouter = require("./router/admin_router");
 // controllers
+
 const signUpRouter = require("./router/signup-router");
 const cookieParser = require("cookie-parser");
+const { homePage } = require("./controller/indexController");
+const indexRouter = require('./router/indexRouter')
 app.use(cookieParser());
 // middlwares
 app.use(express.json())
@@ -24,22 +28,28 @@ app.use(express.static("./front/views/images"));
 app.use(express.static("./front/js-files"));
 app.use(express.static(path.join(__dirname, "node_modules")));
 app.use(express.static(path.join(__dirname, "node_modules")));
-
+/* stex es view engine@ drel em vor html ov ashxati aysiqn ejs nman karaq render anenq 
+nuyn ejs na uxaki front i anun i verjum vor grum einq ejs stex el chenq grum 
+*/
+// view engine
+app.engine('html', cons.swig)
+app.set('views', path.join(__dirname+'/front', 'views'));
+app.set('view engine', 'html');
 // server
 server.listen(3000, () => {
   console.log("server listening port-> 3000");
 });
 
 // Restful API`s
-app.get("/",auth.verifyToken, () => { });
-
+app.use('/',indexRouter)
 app.post("/registerUser",signUpRouter.addUser);
+
 
 app.post("/loginUser", (req, res) => {
   signUpRouter.loginUser(req, res)
   updateOnlineToTrue(req.body.userId);
-});
-// app.use(auth.verifyToken);
+ });
+ //app.use(verifyToken);
 
 app.post("/sendMail",signUpRouter.sendRegistCode);
 
