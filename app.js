@@ -5,7 +5,7 @@ const server = http.createServer(app)
 const socket = require('socket.io')
 const io = socket(server)
 const bodyParser = require("body-parser");
-const {verifyToken}= require("./middelware/auth");
+//const {verifyToken}= require("./middelware/auth");
 const User = require('./models/user-schema');
 const path=require("path");
 const cons = require('consolidate');
@@ -15,7 +15,7 @@ const adminRouter = require("./router/admin_router");
 
 const signUpRouter = require("./router/signup-router");
 const cookieParser = require("cookie-parser");
-const { homePage } = require("./controller/indexController");
+//const { homePage } = require("./controller/indexController");
 const indexRouter = require('./router/indexRouter')
 app.use(cookieParser());
 // middlwares
@@ -43,7 +43,6 @@ server.listen(3000, () => {
 // Restful API`s
 app.use('/',indexRouter)
 app.post("/registerUser",signUpRouter.addUser);
-
 
 app.post("/loginUser", (req, res) => {
   signUpRouter.loginUser(req, res)
