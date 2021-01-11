@@ -9,8 +9,7 @@ const messageText = document.getElementById('messageText')
 const messageUl = document.querySelector('#messageUl')
 
 let writeToUser = null;
-function writeWhom(whom) { //es function-y drel em sax userneri vra 123-toxum onclick="writeWhom(this)"
-    console.log(whom.id) //vercnuma um vra sexmela dra id-n vor 43 toxum uxarki server
+function writeWhom(whom) { 
     writeToUser = whom.id;
 }
 
@@ -23,20 +22,8 @@ function newUserConnected() {
 }
 newUserConnected()
 
-/* erb vor submit es anum gract namak@ */
-// chatMessage.addEventListener('submit', (e) => {
-//     e.preventDefault()
-//     let msg = messageText.value
-//     let obj = {
-//         from: userId,
-//         to: writeToUser,
-//         text: msg
-//     }
-//     socket.emit('message', obj)
-// })
-
-function sendMsg(e) {//es function-y prosty chei uzum vorpes submit ashxater 
-    e.preventDefault()//bayc voncor tarberutyun chexav karas poxes verevi qony
+function sendMsg(e) {
+    e.preventDefault()
     let msg = messageText.value
     let obj = {
         from: userId,
@@ -49,6 +36,7 @@ function sendMsg(e) {//es function-y prosty chei uzum vorpes submit ashxater
 socket.on('onlineUsers', (data) => {
     outputOnlineUsers(data);
 })
+
 /* erb vor click es anum online user i vra */
 socket.on('openChat', ({ setUser, userId }) => {
     chatBox.classList.add('show')
@@ -63,58 +51,33 @@ socket.on('message', ({ user, data }) => {
 
 function outputMessage(user, msg) {
     let userBrowser = localStorage.getItem('userId')
-    console.log(msg)
-
     if (userBrowser === msg.from) {
-
-        let li = document.createElement("li");
-        li.className = "me";
         let p = document.createElement('p')
         p.innerHTML = user.name
-        let div = document.createElement('div')
-        div.className = "notification-event";
+        let li = document.createElement('li')
         let span = document.createElement('span')
         span.className = 'chat-message-item'
         span.innerHTML = msg.text
-        // div.className = 'me'
-        div.append(span)
-        li.append(div)
+        li.className = 'me'
+        li.append(span)
         messageUl.append(p)
         messageUl.append(li)
         messageText.value = msg.text
         messageText.focus()
     } else {
-        alert("he")
-        let li = document.createElement("li");
-        li.className = "you";
         let p = document.createElement('p')
         p.innerHTML = user.name
-        let div = document.createElement('div')
-        div.className = "notification-event";
+        let li = document.createElement('li')
         let span = document.createElement('span')
         span.className = 'chat-message-item'
         span.innerHTML = msg.text
-        div.append(span)
-        li.append(div)
+        li.className = 'you'
+        li.append(span)
         messageUl.append(p)
         messageUl.append(li)
-        li.setAttribute("style", "background-color: rgba(0, 0, 0, 0.4) ");
+        messageText.value = msg.text
+        messageText.focus()
     }
-
-    // qo gracy nerqevinna 
-
-    //let p = document.createElement('p')
-    // p.innerHTML = user.name
-    // let li = document.createElement('li')
-    // let span = document.createElement('span')
-    // span.className = 'chat-message-item'
-    // span.innerHTML = msg.text
-    // li.className = 'you'
-    // li.append(span)
-    // messageUl.append(p)
-    // messageUl.append(li)
-    // messageText.value = msg.text
-    // messageText.focus()
 }
 
 function outputOnlineUsers(data) {

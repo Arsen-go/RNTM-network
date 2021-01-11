@@ -2,8 +2,9 @@ const express = require("express");
 const http = require('http')
 const app = express();
 const server = http.createServer(app)
-const socket = require('socket.io')
-const io = socket(server)
+//const socket = require('socket.io')
+//const io = socket(server)
+const io = require('socket.io')(server)
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 //const {verifyToken}= require("./middelware/auth");
@@ -12,7 +13,7 @@ const path = require("path");
 const cons = require('consolidate');
 
 // controllers & routers
-//const controlMessage = require("./controller/control_message");
+const controlMessage = require("./controller/control_message");
 const adminRouter = require("./router/admin_router");
 const signUpRouter = require("./router/signup-router");
 //const { homePage } = require("./controller/indexController");
@@ -55,21 +56,17 @@ app.post("/sendMail", signUpRouter.sendRegistCode);
 
 app.get("/admin/showUsers", adminRouter.showAllUsers);
 
-app.get("/getAllUsers",adminRouter.showAllUsers);
+app.get("/getAllUsers", adminRouter.showAllUsers);
+
 // sockets
 io.on('connection', async socket => {
   console.log('Connected')
-  socket.on('newUser', (userId) => {
 
+  socket.on('newUser', (userId) => {
     updateOnlineToTrue(userId)
   })
+
   io.emit('onlineUsers', await onlineUsers());
-  // socket.on('userConnected', (userId)=>{
-  //   socket.join(userId)
-  // });
-  // socket.on('userDisconnected',(userId)=>{
-  //   socket.leave(userId)
-  // });
 
   socket.on('openChat', async (userId) => {
     let setUser = await findUser(userId)
@@ -79,16 +76,28 @@ io.on('connection', async socket => {
   socket.on('Offline', async (userId) => {
     await updateOnlineToFalse(userId);
     console.log("user clicked logout:", userId)
-
     io.emit('onlineUsers', await onlineUsers());
   })
 
   socket.on('message', async (data) => {
-    console.log(data)
     let user = await findUser(data.from)
-    console.log(user)
-    socket.emit('message', { user, data })
+    io.emit('message', { user, data })
   })
+
+  // shortcuts messages code start
+  socket.on('msgUser', async (msgObj) => {
+    io.emit('msgUserBack', await controlMessage.add(msgObj));
+  });
+
+  socket.on('openChatWithUser', async (obj) => {
+    io.emit('openChatWithUserBack', await controlMessage.getAllMessages(obj));
+  });
+
+  // socket.on('deleteUserMsg',async (friendId) => {
+  //   io.emit('deleteUserMsgBack', await controlMessage.deleteAllMsg(friendId));
+  // })
+
+  // shortcuts messages code end
 
   socket.on('disconnect', () => {
     console.log('user disconnected');
