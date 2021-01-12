@@ -14,11 +14,8 @@ const cons = require('consolidate');
 
 // controllers & routers
 const controlMessage = require("./controller/control_message");
-const adminRouter = require("./router/admin_router");
-const signUpRouter = require("./router/signup-router");
-//const { homePage } = require("./controller/indexController");
 const indexRouter = require('./router/indexRouter');
-
+const mainRouter = require("./router/main_router");
 // middlwares
 app.use(cookieParser());
 app.use(express.json());
@@ -45,24 +42,35 @@ server.listen(3000, () => {
 // Restful API`s
 app.use('/', indexRouter)
 
-app.post("/registerUser", signUpRouter.addUser);
+app.post("/registerUser", mainRouter.addUser);
 
 app.post("/loginUser", (req, res) => {
-  signUpRouter.loginUser(req, res)
+  mainRouter.loginUser(req, res)
   updateOnlineToTrue(req.body.userId);
 });
 
-app.post("/sendMail", signUpRouter.sendRegistCode);
+app.post("/sendMail", mainRouter.sendRegistCode);
 
-app.get("/admin/showUsers", adminRouter.showAllUsers);
+app.get("/getAllUsers", mainRouter.showAllUsers);
 
-app.get("/getAllUsers", adminRouter.showAllUsers);
+app.post("/getInfoUser", mainRouter.getInfoUser);
+
+app.get("/admin/showUsers", mainRouter.showAllUsers);
+
+app.post("/admin/deleteUser", mainRouter.deleteUser);
 
 // sockets
+
+let socketObj = {}
+
 io.on('connection', async socket => {
   console.log('Connected')
-
+  console.log(socket.id)
+  
   socket.on('newUser', (userId) => {
+    console.log("userId",userId);
+    socketObj[userId] = socket.id;
+    socket.join(socket.id);
     updateOnlineToTrue(userId)
   })
 

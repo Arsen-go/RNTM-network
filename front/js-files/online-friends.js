@@ -16,7 +16,6 @@ function writeWhom(whom) {
 let userId = localStorage.getItem('userId')
 
 const socket = io()
-/*Gevorg i asac methodn erb vor user@ connect lini server poxancenq userId in */
 function newUserConnected() {
     socket.emit('newUser', userId)
 }

@@ -15,8 +15,8 @@
             <div class="row">
                 <div class="col-md-3">
                     <ul class="nav nav-pills nav-stacked">
-                        <li class="active"><a href="landing.html"><i class="fa fa-home fa-fw"></i>Home</a></li>
-                        <li><a href="delete_ser.html"><i class="fa fa-list-alt fa-fw"></i>Delete</a></li>
+                        <li class="active"><a href="login"><i class="fa fa-home fa-fw"></i>Home</a></li>
+                        <li><a href="delete_user.html"><i class="fa fa-list-alt fa-fw"></i>Delete</a></li>
                         <li><a href="update_user.html"><i class="fa fa-bar-chart-o fa-fw"></i>Update</a></li>
                         <li><a href="all_users.html"><i class="fa fa-file-o fa-fw"></i>User</a></li>
 
@@ -24,14 +24,7 @@
                 </div>
             </div>
         </div>
-        <form id="form">
 
-
-        </form>
-
-
-
-        <div class="container">
             <h2>Table of all user</h2>
             <p>Select and delete:</p>
             <table class="table">
@@ -47,8 +40,11 @@
 
                 </tbody>
             </table>
+            <button class="btn btn-primary" onclick="deleteUser()" id="deleteBtn">delete</button>
+
         </div>
-        <button class="btn btn-primary" id="deleteBtn">delete</button>
+        
+    </div>
         <style>
             @import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
 
@@ -63,10 +59,3 @@
 </body>
 
 </html>
-<!-- <form id="form">
-<input type="checkbox" name="name" value="5fd8f32e8dff1b4140f09e50"/>form<br>
-</form>
-<button id="deleteBtn">delete</button>
-</body>
-
-</html> -->

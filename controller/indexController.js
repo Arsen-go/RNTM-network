@@ -3,7 +3,7 @@ class IndexController {
         res.render("newsfeed")
     }
     loginPage(req, res) {
-        res.clearCookie('x-access-token')
+        res.clearCookie('x-access-token') 
         res.render('index')
     }
     profilePage(req, res) {
@@ -15,5 +15,6 @@ class IndexController {
     userMessages(req, res) {
         res.render('messages')
     }
+
 }
 module.exports = new IndexController()

@@ -5,19 +5,10 @@
 </head>
 
 <body>
-    <!-- <form action="/update-user.html">
-
-    <p>Update name</p>
-    <input name="oldName" id="oldName" /><br />
-    <p>To</p>
-    <input name="newName" id="newName" /><br />
-    <input type="submit" id="updateBtn">
-
-  </form> -->
     <html>
 
     <head>
-        <script src="/update-user.js"></script>
+        <script src="/admin.js"></script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <script src="bootstrap/dist/js/bootstrap.min.js"></script>
@@ -29,7 +20,7 @@
             <div class="row">
                 <div class="col-md-3">
                     <ul class="nav nav-pills nav-stacked">
-                        <li class="active"><a href="landing.html"><i class="fa fa-home fa-fw"></i>Home</a></li>
+                        <li><a href="login"><i class="fa fa-home fa-fw"></i>Home</a></li>
                         <li><a href="delete_user.html"><i class="fa fa-list-alt fa-fw"></i>Delete</a></li>
                         <li><a href="update_user.html"><i class="fa fa-bar-chart-o fa-fw"></i>Update</a></li>
                         <li><a href="all_users.html"><i class="fa fa-file-o fa-fw"></i>User</a></li>
@@ -38,16 +29,27 @@
                 </div>
             </div>
         </div><br>
-        <div id="updateDiv" style="display: none">
-            NAME:<input name="newName" id="name" /><br /><br />
-            SURNAME:<input id="surname" required /><br /><br />
-            CITY:<input id="city" required /><br /><br />
-            BIRTH:<input id="birth" type="date" required><br><br>
+        <div class="container">
+            <h2>Table of all user</h2>
+            <p>Select and delete:</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Select</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody" ng-app="myApp" ng-controller="myCtrl">
+
+
+                </tbody>
+            </table>
+            <button class="btn btn-primary" id="showCard">Update</button>
         </div>
         <form action="/update-user.html" id="form">
             <input type="submit" id="updateBtn" class="btn btn-primary" style="display: none" />
         </form>
-        <button id="formUpdate" style="margin-left: 30px;" class="btn btn-primary">Update</button>
 
         <style>
             @import url(http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css);
