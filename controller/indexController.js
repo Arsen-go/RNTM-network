@@ -5,7 +5,7 @@ class IndexController {
         res.render("newsfeed")
     }
     loginPage(req, res) {
-        res.clearCookie('x-access-token')
+        res.clearCookie('x-access-token') 
         res.render('index')
     }
     profilePage(req, res) {
@@ -23,6 +23,7 @@ class IndexController {
     userMessages(req, res) {
         res.render('messages')
     }
+<<<<<<< HEAD
    async ConfirmRequest(req,res) {
         let {from,to} = req.body
        let user = await User.findOne({_id:from}).select({friendRequest:1,friend:1}).exec()
@@ -36,5 +37,8 @@ class IndexController {
 
       res.json({message:`Now ${UserFriend.name} is your firend `})
     }
+=======
+
+>>>>>>> b3a6a96abe75c0dfa922bc6d807600face599667
 }
 module.exports = new IndexController()

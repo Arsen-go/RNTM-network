@@ -1,8 +1,6 @@
 /* eslint-disable */
 let registCode = 0;
 function registerUser() {
-
-  console.log(createUserObject())
   alert(checkInputParams())
   if (checkInputParams()) {
     fetch("/registerUser", {
@@ -154,18 +152,18 @@ function sendEmail(e) {
       Accept: "application/json",
     },
     body: JSON.stringify({
-      email:document.getElementById("email").value,
+      email: document.getElementById("email").value,
     }),
   }).then((res) => {
     return res.json();
   })
     .then((obj) => {
       console.log(obj);
-      if(!obj.isSend){
+      if (!obj.isSend) {
         infoEmail.innerHTML = "Something wrong with Email";
-      }else{
+      } else {
         registCode = obj.registrationCode;
       }
     })
-    e.preventDefault();
+  e.preventDefault();
 }
