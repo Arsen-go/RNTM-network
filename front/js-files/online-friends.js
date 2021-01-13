@@ -8,10 +8,19 @@ const chatMessage = document.querySelector('.text-box')
 const messageText = document.getElementById('messageText')
 const messageUl = document.querySelector('#messageUl')
 
+
 let writeToUser = null;
 function writeWhom(whom) { 
     writeToUser = whom.id;
 }
+
+
+    //allUserUl  await `${data.arrayOfUsers.map(user=>{
+    //    `<li id=${user._id}>${user.name}</li>`
+    // }).join('')}`
+     //`${data.map(user => `<li class='friend' onclick="writeWhom(this)" id=${user._id}>${user.name}</li>`).join('')}`
+   
+   
 
 let userId = localStorage.getItem('userId')
 

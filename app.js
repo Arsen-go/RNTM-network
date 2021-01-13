@@ -14,6 +14,7 @@ const cons = require('consolidate');
 
 // controllers & routers
 const controlMessage = require("./controller/control_message");
+const {ConfirmRequest} = require('./controller/indexController')
 const adminRouter = require("./router/admin_router");
 const signUpRouter = require("./router/signup-router");
 //const { homePage } = require("./controller/indexController");
@@ -57,13 +58,16 @@ app.post("/sendMail", signUpRouter.sendRegistCode);
 app.get("/admin/showUsers", adminRouter.showAllUsers);
 
 app.get("/getAllUsers", adminRouter.showAllUsers);
+app.post('/ConfirmFrienqRequest',ConfirmRequest)
+let socketObj = {}
 
 // sockets
 io.on('connection', async socket => {
   console.log('Connected')
-
   socket.on('newUser', (userId) => {
     updateOnlineToTrue(userId)
+    socketObj[userId] = socket.id
+    console.log(socketObj)
   })
 
   io.emit('onlineUsers', await onlineUsers());
@@ -92,7 +96,20 @@ io.on('connection', async socket => {
   socket.on('openChatWithUser', async (obj) => {
     io.emit('openChatWithUserBack', await controlMessage.getAllMessages(obj));
   });
-
+   
+  socket.on('friendRequest',async (data)=>{
+    console.log('friendRequest')
+    let {from,to} = data
+    let user = await findUser(to)
+      user.friendRequest.push(from)
+      user.save((err)=> {
+       if(err) console.log('err',err)
+      })
+      io.emit('friendRequest')
+  })
+  socket.on('FriendRequestPage',()=>{
+    console.log('FriendRequestPageaaa')
+  })
   // socket.on('deleteUserMsg',async (friendId) => {
   //   io.emit('deleteUserMsgBack', await controlMessage.deleteAllMsg(friendId));
   // })
@@ -106,7 +123,7 @@ io.on('connection', async socket => {
 
 // functions: bayc es lav klini hanenq stexic urish js
 async function findUser(userId) {
-  return await User.findOne({ _id: userId }).select({ name: 1, photo: 1, message: 1 });
+  return await User.findOne({ _id: userId }).select({ name: 1, photo: 1, message: 1, friendRequest:1});
 }
 
 async function onlineUsers() {

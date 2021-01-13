@@ -38,15 +38,17 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'post',
     }],
-    friend: {
+    friend: [{
         type: Schema.Types.ObjectId,
-    },
+        ref: 'userschema'
+    }],
     photo: [{
         type: Schema.Types.ObjectId,
         ref: 'photo',
     }],
     friendRequest: [{
         type: Schema.Types.ObjectId,
+        ref: 'userschema'
     }],
     online: {
         type: Boolean

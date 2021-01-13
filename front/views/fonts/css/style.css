@@ -3381,7 +3381,8 @@ nav.breadcrumb {
     padding: 20px;
     width: 100%;
     transition: all 0.15s linear 0s;
-}
+    
+ }
 
 .nearby-contct > li:last-child {
     margin-bottom: 0;
@@ -3431,6 +3432,7 @@ a.add-butn {
     right: 0;
     text-transform: capitalize;
     top: 10px;
+    cursor: pointer;
 }
 
 .pepl-info > span {
@@ -3628,6 +3630,8 @@ a.add-butn {
 a.add-butn.more-action {
     background: lightslategray none repeat scroll 0 0;
     right: 74px;
+    cursor: pointer;
+    color:white
 }
 
 #frends a.add-butn.more-action {
@@ -10041,6 +10045,10 @@ aside.sidebar.full-style {
     font-weight: bold;
     letter-spacing: 0.5px;
     text-transform: uppercase;
+}
+
+.friend-meta .underline {
+    cursor: pointer;
 }
 
 
