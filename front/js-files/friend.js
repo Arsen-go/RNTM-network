@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 const allUserUl = document.getElementById('followers')
 const AddFriendButton = document.querySelectorAll('.friend-meta')
 

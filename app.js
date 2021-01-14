@@ -14,15 +14,13 @@ const cons = require('consolidate');
 
 // controllers & routers
 const controlMessage = require("./controller/control_message");
-<<<<<<< HEAD
 const {ConfirmRequest} = require('./controller/indexController')
 const adminRouter = require("./router/admin_router");
-const signUpRouter = require("./router/signup-router");
 //const { homePage } = require("./controller/indexController");
-=======
->>>>>>> b3a6a96abe75c0dfa922bc6d807600face599667
+
 const indexRouter = require('./router/indexRouter');
 const mainRouter = require("./router/main_router");
+
 // middlwares
 app.use(cookieParser());
 app.use(express.json());
@@ -62,15 +60,17 @@ app.get("/getAllUsers", mainRouter.showAllUsers);
 
 app.post("/getInfoUser", mainRouter.getInfoUser);
 
+app.post("/admin/deleteUser", mainRouter.deleteUser);
+
 app.get("/admin/showUsers", mainRouter.showAllUsers);
 
-<<<<<<< HEAD
+app.post("/admin/showUserFriend",mainRouter.showFriends);
+
+app.post("/admin/showUserMessages",mainRouter.showUserMessages);
+
 app.get("/getAllUsers", adminRouter.showAllUsers);
+
 app.post('/ConfirmFrienqRequest',ConfirmRequest)
-let socketObj = {}
-=======
-app.post("/admin/deleteUser", mainRouter.deleteUser);
->>>>>>> b3a6a96abe75c0dfa922bc6d807600face599667
 
 // sockets
 
@@ -78,11 +78,8 @@ let socketObj = {}
 
 io.on('connection', async socket => {
   console.log('Connected')
-<<<<<<< HEAD
-=======
   console.log(socket.id)
   
->>>>>>> b3a6a96abe75c0dfa922bc6d807600face599667
   socket.on('newUser', (userId) => {
     console.log("userId",userId);
     socketObj[userId] = socket.id;
@@ -97,7 +94,7 @@ io.on('connection', async socket => {
   socket.on('openChat', async (userId) => {
     let setUser = await findUser(userId)
     socket.emit('openChat', { setUser, userId })
-  })
+  });
 
   socket.on('Offline', async (userId) => {
     await updateOnlineToFalse(userId);
@@ -128,10 +125,12 @@ io.on('connection', async socket => {
        if(err) console.log('err',err)
       })
       io.emit('friendRequest')
-  })
+  });
+
   socket.on('FriendRequestPage',()=>{
     console.log('FriendRequestPageaaa')
-  })
+  });
+
   // socket.on('deleteUserMsg',async (friendId) => {
   //   io.emit('deleteUserMsgBack', await controlMessage.deleteAllMsg(friendId));
   // })

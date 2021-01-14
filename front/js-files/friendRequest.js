@@ -1,29 +1,31 @@
+/* eslint-disable */
+
 const FriendRequestButton = document.getElementById('FriendRequestButton')
 const FriendRequestUl = document.getElementById('FriendRequest')
 const socket = io()
 
-FriendRequestButton.addEventListener('click',()=>{
-    fetch('/friendRequest',{
+FriendRequestButton.addEventListener('click', () => {
+    fetch('/friendRequest', {
         method: 'POST',
         headers: {
-            'Accept':'application/json'
+            'Accept': 'application/json'
         }
     })
-    .then(res=>res.json())
-    .then(async data=>{
-        let {FriendRequestList} = data
-        console.log(FriendRequestList.friendRequest)
-       
-     await outputFriendRequest(FriendRequestList)
-        
-       // console.log(FriendRequestList)
-    }).catch(err=>{
-        console.log(err)
-    })
+        .then(res => res.json())
+        .then(async data => {
+            let { FriendRequestList } = data
+            console.log(FriendRequestList.friendRequest)
+
+            await outputFriendRequest(FriendRequestList)
+
+            // console.log(FriendRequestList)
+        }).catch(err => {
+            console.log(err)
+        })
 })
 
- function outputFriendRequest(FriendRequestList) {
-    FriendRequestList.friendRequest.map(user=>{
+function outputFriendRequest(FriendRequestList) {
+    FriendRequestList.friendRequest.map(user => {
         let li = document.createElement('li')
         let divContainer = document.createElement('div')
         divContainer.className = 'nearly-pepls'
@@ -31,7 +33,7 @@ FriendRequestButton.addEventListener('click',()=>{
         let figure = document.createElement('figure')
         let a = document.createElement('a')
         let img = document.createElement('img')
-        img.src = 'images/resources/nearly5.jpg' 
+        img.src = 'images/resources/nearly5.jpg'
         a.append(img)
         figure.append(a)
         divContainer.append(figure)
@@ -45,7 +47,7 @@ FriendRequestButton.addEventListener('click',()=>{
         let H4 = document.createElement('h4')
 
         // user i anuni vra vor smenq gna ira ej
-        let RenderUserPage = document.createElement('a') 
+        let RenderUserPage = document.createElement('a')
         RenderUserPage.innerHTML = user.name
         H4.append(RenderUserPage)
         usersDiv.append(H4)
@@ -53,13 +55,13 @@ FriendRequestButton.addEventListener('click',()=>{
         //let attr = document.createAttribute('data-ripple')
         let DeleteRequest = document.createElement('a')
         DeleteRequest.className = 'add-butn more-action'
-        DeleteRequest.setAttribute('name','Delete')
+        DeleteRequest.setAttribute('name', 'Delete')
         //DeleteRequest.setAttributeNode(attr)
         DeleteRequest.innerHTML = 'delete Request'
         DeleteRequest.id = user._id
         let ConfirmRequest = document.createElement('a')
         ConfirmRequest.className = 'add-butn'
-        ConfirmRequest.setAttribute('name','Confirm')
+        ConfirmRequest.setAttribute('name', 'Confirm')
         ConfirmRequest.innerHTML = 'Confirm'
         ConfirmRequest.id = user._id
         //ConfirmRequest.setAttributeNode(attr)
@@ -67,37 +69,37 @@ FriendRequestButton.addEventListener('click',()=>{
         usersDiv.append(DeleteRequest)
         usersDiv.append(ConfirmRequest)
         divContainer.append(usersDiv)
-       })
-       ClickDeleteOrConfirm(FriendRequestList)
+    })
+    ClickDeleteOrConfirm(FriendRequestList)
 }
 function ClickDeleteOrConfirm(FriendRequestList) {
-   
-    const Delete = document.getElementsByName('Delete') 
-    const Confirm = document.getElementsByName('Confirm') 
-   
+
+    const Delete = document.getElementsByName('Delete')
+    const Confirm = document.getElementsByName('Confirm')
+
     for (let confirmButton of Confirm) {
-        confirmButton.addEventListener('click',()=>{
-         //console.log(FriendRequestList)
-        
-         fetch('/ConfirmFrienqRequest',{
-             method:"POST",
-             headers: {
-                 'content-type':'application/json'
-             },
-             body: JSON.stringify({
-                 from: localStorage.getItem('userId'),
-                 to: confirmButton.id
-             })
-          }).then(res=>res.json())
-           .then(data=>{
-               if (data.message) {
-                   alert(data.message)
-               }
-           })
+        confirmButton.addEventListener('click', () => {
+            //console.log(FriendRequestList)
+
+            fetch('/ConfirmFrienqRequest', {
+                method: "POST",
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    from: localStorage.getItem('userId'),
+                    to: confirmButton.id
+                })
+            }).then(res => res.json())
+                .then(data => {
+                    if (data.message) {
+                        alert(data.message)
+                    }
+                })
         })
     }
 }
-/* esi DOM i mas@ karch grelu dzever chashxatec ete karas nenc ara 
+/* esi DOM i mas@ karch grelu dzever chashxatec ete karas nenc ara
  esi ashxati senc code@ aveli karcha u chisht
 */
  // FriendRequestUl.innerHTML =  `${FriendRequestList.friendRequest.map(user => {

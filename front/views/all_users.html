@@ -52,7 +52,37 @@
 
                 </tbody>
             </table>
-            <button class="btn btn-primary" id="showCard">Show something</button>
+            <button class="btn btn-primary" onclick="showUserFriend()" id="showFriend">Show Friend</button>
+            <button class="btn btn-primary" onclick="showUserMessage()" id="showMessage">Show Messages</button>
+
+        </div>
+        <div class="container" id="friends" style="display: none;">
+            <h2>Table of user friends</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tbody2" ng-app="myApp" ng-controller="myCtrl" >
+                </tbody>
+            </table>
+        </div>
+        <div class="container" id="messages" style="display: none;">
+            <h2>Table of user message</h2>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>To</th>
+                        <th>Text</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="tbody3" ng-app="myApp" ng-controller="myCtrl" >
+                </tbody>
+            </table>
         </div>
 
         <style>

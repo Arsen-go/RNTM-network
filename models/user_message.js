@@ -4,12 +4,12 @@ const Schema = mongoose.Schema;
 const MessageSchema = new Schema({
   from: {
     type: Schema.Types.ObjectId,
-    ref: 'user',
+    ref: 'userschema',
     required: true,
   },
   to: {
     type: Schema.Types.ObjectId,
-    ref: 'user',
+    ref: 'userschema',
     required: true,
   },
   text: {

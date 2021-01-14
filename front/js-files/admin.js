@@ -12,7 +12,7 @@ function loadUsers() {
     })
     .then((data) => {
       console.log(data.arrayOfUsers);
-      createTagOfUser(data.arrayOfUsers);
+      createTagOfUser(data.arrayOfUsers, "tbody");
     });
 };
 
@@ -24,7 +24,7 @@ function deleteUser() {
       "Content-Type": "application/json",
       Accept: "application/json",
     },
-    body: JSON.stringify({userId:getCheckedUserId()}),
+    body: JSON.stringify({ userId: getCheckedUserId() }),
   })
     .then((res) => {
       return res.json();
@@ -36,9 +36,9 @@ function deleteUser() {
     });
 }
 
-function createTagOfUser(data) {
+function createTagOfUser(data, where) {
   data.forEach((element) => {
-    let tbody = document.getElementById("tbody");
+    let tbody = document.getElementById(`${where}`);
     let tr = document.createElement("tr");
     const tdname = document.createElement("td");
     tdname.appendChild(document.createTextNode(element.name));
@@ -51,6 +51,61 @@ function createTagOfUser(data) {
     const tdcheckbox = document.createElement("td");
     tdcheckbox.appendChild(userTag);
     tr.append(tdname, tdsurname, tdcheckbox);
+    tbody.appendChild(tr);
+  });
+};
+
+function showUserFriend() {
+  document.getElementById("tbody2").innerHTML = "";
+  fetch("/admin/showUserFriend", {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ userId: getCheckedUserId() }),
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data);
+      createTagOfUser(data.data, "tbody2");
+      document.getElementById("friends").style.display = "inline"
+    });
+}
+
+function showUserMessage() {
+  document.getElementById("tbody3").innerHTML = "";
+  fetch("/admin/showUserMessages", {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ userId: getCheckedUserId() }),
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      console.log(data.arrayOfMessages);
+      createTagOfMessages(data.arrayOfMessages, "tbody3");
+      document.getElementById("messages").style.display = "inline"
+    });
+}
+
+function createTagOfMessages(data, where) {
+  data.forEach((element) => {
+    let tbody = document.getElementById(`${where}`);
+    let tr = document.createElement("tr");
+    const tdname = document.createElement("td");
+    tdname.appendChild(document.createTextNode(element.to.name));
+    const tdText = document.createElement("td");
+    tdText.appendChild(document.createTextNode(element.text));
+    const tdTime = document.createElement("td");
+    tdTime.appendChild(document.createTextNode(element.createdAt));
+    tr.append(tdname, tdText, tdTime);
     tbody.appendChild(tr);
   });
 };
