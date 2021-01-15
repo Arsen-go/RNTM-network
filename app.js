@@ -68,6 +68,10 @@ app.post("/admin/showUserFriend",mainRouter.showFriends);
 
 app.post("/admin/showUserMessages",mainRouter.showUserMessages);
 
+app.post("/editPassword/changeUserPassword",mainRouter.changePassword);
+
+app.post("/admin/updateUser",mainRouter.updateUser)
+
 app.get("/getAllUsers", adminRouter.showAllUsers);
 
 app.post('/ConfirmFrienqRequest',ConfirmRequest)

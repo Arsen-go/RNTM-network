@@ -14,7 +14,7 @@ function loadUsers() {
       console.log(data.arrayOfUsers);
       createTagOfUser(data.arrayOfUsers, "tbody");
     });
-};
+}
 
 function deleteUser() {
   alert(getCheckedUserId());
@@ -53,7 +53,7 @@ function createTagOfUser(data, where) {
     tr.append(tdname, tdsurname, tdcheckbox);
     tbody.appendChild(tr);
   });
-};
+}
 
 function showUserFriend() {
   document.getElementById("tbody2").innerHTML = "";
@@ -71,7 +71,7 @@ function showUserFriend() {
     .then((data) => {
       console.log(data);
       createTagOfUser(data.data, "tbody2");
-      document.getElementById("friends").style.display = "inline"
+      document.getElementById("friends").style.display = "inline";
     });
 }
 
@@ -91,7 +91,7 @@ function showUserMessage() {
     .then((data) => {
       console.log(data.arrayOfMessages);
       createTagOfMessages(data.arrayOfMessages, "tbody3");
-      document.getElementById("messages").style.display = "inline"
+      document.getElementById("messages").style.display = "inline";
     });
 }
 
@@ -108,7 +108,43 @@ function createTagOfMessages(data, where) {
     tr.append(tdname, tdText, tdTime);
     tbody.appendChild(tr);
   });
-};
+}
+
+function openForm() {
+  document.getElementById("showUpdateForm").style.display = "none";
+  document.getElementById("updateUser").style.display = "inline";
+}
+
+function updateUser() {
+  fetch("/admin/updateUser", {
+    method: "post",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({ obj: createUpdateObj(), id: getCheckedUserId() }),
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((data) => {
+      if (!data.done) {
+        document.getElementById("updateInfo").innerHTML = "Something wrong";
+      }
+    });
+}
+
+function createUpdateObj() {
+  let adminInput = document.querySelectorAll('input[name="update"]');
+  let obj = {
+    name: adminInput[0].value,
+    email: adminInput[1].value,
+    phone: adminInput[2].value,
+    login: adminInput[3].value,
+    password: adminInput[4].value,
+  };
+  return obj;
+}
 
 getCheckedUserId = () => {
   let id;
