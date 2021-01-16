@@ -9,13 +9,13 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 //const {verifyToken}= require("./middelware/auth");
 const User = require('./models/user-schema');
+const userPhoto = require('./models/photo_schema');
 const path = require("path");
 const cons = require('consolidate');
-
+const multer = require("multer");
 // controllers & routers
 const controlMessage = require("./controller/control_message");
-const {ConfirmRequest} = require('./controller/indexController')
-const adminRouter = require("./router/admin_router");
+const { ConfirmRequest } = require('./controller/indexController')
 //const { homePage } = require("./controller/indexController");
 
 const indexRouter = require('./router/indexRouter');
@@ -64,18 +64,58 @@ app.post("/admin/deleteUser", mainRouter.deleteUser);
 
 app.get("/admin/showUsers", mainRouter.showAllUsers);
 
-app.post("/admin/showUserFriend",mainRouter.showFriends);
+app.post("/admin/showUserFriend", mainRouter.showFriends);
 
-app.post("/admin/showUserMessages",mainRouter.showUserMessages);
+app.post("/admin/showUserMessages", mainRouter.showUserMessages);
 
-app.post("/editPassword/changeUserPassword",mainRouter.changePassword);
+app.post("/editPassword/changeUserPassword", mainRouter.changePassword);
 
-app.post("/admin/updateUser",mainRouter.updateUser)
+app.post("/admin/updateUser", mainRouter.updateUser)
 
-app.get("/getAllUsers", adminRouter.showAllUsers);
+app.post("/getSocialUser", mainRouter.showSocialUser);
 
-app.post('/ConfirmFrienqRequest',ConfirmRequest)
+app.post('/ConfirmFrienqRequest', ConfirmRequest)
 
+const storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, path.join(__dirname, 'front/views/images/resources'));
+  },
+  filename: function (req, file, callback) {
+    callback(null, Date.now() + file.originalname);
+  }
+});
+const upload = multer({ storage: storage, limits: 2 * 1024 * 1024 });
+
+app.post("/editProfileImg", upload.single('edit'), async (req, res) => {
+  console.log("ekav")
+  let userId = req.body.userId
+  const file = req.file.filename
+  console.log("file", file)
+  console.log("req.body", req.body)
+  if (!file) {
+    console.log("chexav")
+    const error = new Error('Please upload a file')
+    error.httpStatusCode = 400
+    return (error)
+  }
+  res.json(req.file.filename)
+  let user = await findUser(userId)
+  user.profilePhotos = file;
+  user.save();
+  res.json({ imageName: file });
+  console.log('user', user)
+})
+
+app.post("/getProfilePhoto", async (req, res) => {
+  try {
+    console.log("s")
+    let result = await User.findById(req.body.userId).select({profilePhotos: 1 });
+    console.log(result);
+    res.json({imageName:result})
+  } catch (err) {
+    throw new Error("Error on profile photo");
+  }
+})
 // sockets
 
 let socketObj = {}
@@ -83,9 +123,9 @@ let socketObj = {}
 io.on('connection', async socket => {
   console.log('Connected')
   console.log(socket.id)
-  
+
   socket.on('newUser', (userId) => {
-    console.log("userId",userId);
+    console.log("userId", userId);
     socketObj[userId] = socket.id;
     socket.join(socket.id);
     updateOnlineToTrue(userId)
@@ -113,25 +153,25 @@ io.on('connection', async socket => {
 
   // shortcuts messages code start
   socket.on('msgUser', async (msgObj) => {
-    io.emit('msgUserBack', await controlMessage.add(msgObj));
+    io.to(socketObj[msgObj.to]).emit('msgUserBack', await controlMessage.add(msgObj));
   });
 
   socket.on('openChatWithUser', async (obj) => {
-    io.emit('openChatWithUserBack', await controlMessage.getAllMessages(obj));
-  });
-   
-  socket.on('friendRequest',async (data)=>{
-    console.log('friendRequest')
-    let {from,to} = data
-    let user = await findUser(to)
-      user.friendRequest.push(from)
-      user.save((err)=> {
-       if(err) console.log('err',err)
-      })
-      io.emit('friendRequest')
+    io.to(socketObj[obj.to]).emit('openChatWithUserBack', await controlMessage.getAllMessages(obj));
   });
 
-  socket.on('FriendRequestPage',()=>{
+  socket.on('friendRequest', async (data) => {
+    console.log('friendRequest')
+    let { from, to } = data
+    let user = await findUser(to)
+    user.friendRequest.push(from)
+    user.save((err) => {
+      if (err) console.log('err', err)
+    })
+    io.emit('friendRequest')
+  });
+
+  socket.on('FriendRequestPage', () => {
     console.log('FriendRequestPageaaa')
   });
 
@@ -148,7 +188,7 @@ io.on('connection', async socket => {
 
 // functions: bayc es lav klini hanenq stexic urish js
 async function findUser(userId) {
-  return await User.findOne({ _id: userId }).select({ name: 1, photo: 1, message: 1, friendRequest:1});
+  return await User.findOne({ _id: userId }).select({ name: 1, photo: 1, message: 1, friendRequest: 1 });
 }
 
 async function onlineUsers() {

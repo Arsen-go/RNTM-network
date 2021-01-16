@@ -10,19 +10,19 @@ class SignUpRouter {
         console.log(schema.validate(req.body).error)
         if (schema.validate(req.body).error) {
             console.log("user validation error")
-            res.json({ error: schema.validate(req.body).error});
+            res.json({ error: schema.validate(req.body).error });
         } else {
             try {
                 let data = await User.find({ email: req.body.email });
                 if (data.length) {
                     console.log("email exsist");
                     res.json({ info: "Email exsist: try another" });
+                } else {
+                    let hashPassword = hash(req.body.password);
+                    req.body.password = hashPassword;
+                    await signUpController.insertUser(req.body);
+                    res.json({ result: true });
                 }
-                
-                let hashPassword = hash(req.body.password);
-                req.body.password = hashPassword;
-                await signUpController.insertUser(req.body);
-                res.json({ result: true });
             } catch (err) {
                 console.log("error on checking password: user password " + err);
                 res.json(err);
@@ -30,7 +30,7 @@ class SignUpRouter {
         }
     }
     async loginUser(req, res) {
-        let token = req.headers.xaccesstoken; 
+        let token = req.headers.xaccesstoken;
         if (token === "undefined" || token === "null" || token === undefined || token === null) {//stex tarber browserner tarber ban en tali
             console.log("token isnt sign: normala es ysenc pti ashxati")
         } else {
@@ -57,12 +57,12 @@ class SignUpRouter {
         token = jwt.sign({ userId: user._id, email: user.email, password: user.password }, "esim", {
             expiresIn: "20d",
         });
-        res.cookie("x-access-token",token);
+        res.cookie("x-access-token", token);
         res.json({ userId: user._id, email: user.email, token: token, tokenExpiration: 1, log: true });
         //res.sendFile(__dirname + "/views/" + "newsfeed.html")
     }
-    sendRegistCode(req,res) {        
-        mail.sendMail(req,res);
+    sendRegistCode(req, res) {
+        mail.sendMail(req, res);
     }
 }
 

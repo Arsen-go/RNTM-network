@@ -6,7 +6,7 @@ const {
   updateUser,
 } = require("./admin_router");
 const { addUser, loginUser, sendRegistCode } = require("./signup-router");
-const { getInfoUser, changePassword } = require("./user_router");
+const { getInfoUser, changePassword, showSocialUser } = require("./user_router");
 
 module.exports = {
   showAllUsers,
@@ -19,4 +19,5 @@ module.exports = {
   showUserMessages,
   updateUser,
   changePassword,
+  showSocialUser,
 };

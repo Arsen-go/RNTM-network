@@ -26,7 +26,7 @@ const userSchema = new Schema({
         type: String,
         required: true,
     },
-    gender:{
+    gender: {
         type: String,
         required: true,
     },
@@ -46,6 +46,9 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'photo',
     }],
+    profilePhotos: {
+        type: String,
+    },
     friendRequest: [{
         type: Schema.Types.ObjectId,
         ref: 'userschema'
@@ -53,7 +56,7 @@ const userSchema = new Schema({
     online: {
         type: Boolean
     }
-},{timestamps:true})
+}, { timestamps: true })
 
 const User = mongoose.model('userschema', userSchema)
 module.exports = User

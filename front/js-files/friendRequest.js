@@ -1,10 +1,11 @@
-/* eslint-disable */
+// /* eslint-disable */
 
-const FriendRequestButton = document.getElementById('FriendRequestButton')
 const FriendRequestUl = document.getElementById('FriendRequest')
+
+const FriendRequestCount = document.getElementById('FriendRequestCount')
 const socket = io()
 
-FriendRequestButton.addEventListener('click', () => {
+function GetFriendReqest() {
     fetch('/friendRequest', {
         method: 'POST',
         headers: {
@@ -13,27 +14,28 @@ FriendRequestButton.addEventListener('click', () => {
     })
         .then(res => res.json())
         .then(async data => {
-            let { FriendRequestList } = data
-            console.log(FriendRequestList.friendRequest)
 
+            let { FriendRequestList } = await data
             await outputFriendRequest(FriendRequestList)
 
-            // console.log(FriendRequestList)
         }).catch(err => {
             console.log(err)
         })
-})
+}
+GetFriendReqest()
 
 function outputFriendRequest(FriendRequestList) {
+    FriendRequestCount.innerHTML = FriendRequestList.friendRequest.length
     FriendRequestList.friendRequest.map(user => {
         let li = document.createElement('li')
+        li.classList = "FrendRequest"
         let divContainer = document.createElement('div')
         divContainer.className = 'nearly-pepls'
         //user i nkari mas
         let figure = document.createElement('figure')
         let a = document.createElement('a')
         let img = document.createElement('img')
-        img.src = 'images/resources/nearly5.jpg'
+        img.src = `images/resources/${user.profilePhotos}`
         a.append(img)
         figure.append(a)
         divContainer.append(figure)
@@ -76,11 +78,14 @@ function ClickDeleteOrConfirm(FriendRequestList) {
 
     const Delete = document.getElementsByName('Delete')
     const Confirm = document.getElementsByName('Confirm')
+    const FrendRequestLi = document.querySelectorAll('.FrendRequest')
 
-    for (let confirmButton of Confirm) {
-        confirmButton.addEventListener('click', () => {
-            //console.log(FriendRequestList)
-
+    // Frienq Request Confirm 
+    for (let i = 0; i < Confirm.length; i++) {
+        Confirm[i].addEventListener('click', () => {
+            /* fetch server to delete that frienq request and add that user 
+            in a friends
+            */
             fetch('/ConfirmFrienqRequest', {
                 method: "POST",
                 headers: {
@@ -88,29 +93,43 @@ function ClickDeleteOrConfirm(FriendRequestList) {
                 },
                 body: JSON.stringify({
                     from: localStorage.getItem('userId'),
-                    to: confirmButton.id
+                    to: Confirm[i].id
+                })
+            }).then(res => res.json())
+                .then(data => {
+                    if (data.message) {
+
+                        socket.emit('ConfirmRequest', data.info)
+                        alert(data.message)
+                        FrendRequestLi[i].remove()
+                    }
+                })
+        })
+    }
+
+    // Delete Friend request 
+    for (let i = 0; i < Delete.length; i++) {
+        Delete[i].addEventListener('click', () => {
+            //console.log(FriendRequestList)
+
+            fetch('/DeleteFrienqRequest', {
+                method: "POST",
+                headers: {
+                    'content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    from: localStorage.getItem('userId'),
+                    to: Delete[i].id
                 })
             }).then(res => res.json())
                 .then(data => {
                     if (data.message) {
                         alert(data.message)
+                        FrendRequestLi[i].remove()
                     }
                 })
         })
+
+
     }
 }
-/* esi DOM i mas@ karch grelu dzever chashxatec ete karas nenc ara
- esi ashxati senc code@ aveli karcha u chisht
-*/
- // FriendRequestUl.innerHTML =  `${FriendRequestList.friendRequest.map(user => {
-        //   `<li >
-        //     <figure><img src="images/resources/friend-avatar3.jpg" alt=""></figure>
-        //     <div class="friend-meta">
-        //         <h4><a href="time-line.html" title=""></a></h4>
-        //         <a href="#" title="" class="add-butn more-action" data-ripple="">delete Request</a>
-        //         <a href="#" title="" class="add-butn" data-ripple="">Confirm</a>
-        //     </div>
-        // </li>`
-        //     }).join('')}`
-
-
