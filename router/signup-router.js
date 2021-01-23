@@ -18,8 +18,8 @@ class SignUpRouter {
                     console.log("email exsist");
                     res.json({ info: "Email exsist: try another" });
                 } else {
-                    let hashPassword = hash(req.body.password);
-                    req.body.password = hashPassword;
+                   // let hashPassword = hash(req.body.password);
+                    //req.body.password = hashPassword;
                     await signUpController.insertUser(req.body);
                     res.json({ result: true });
                 }
@@ -49,17 +49,16 @@ class SignUpRouter {
             res.json({ log: false, info: "Login is incorrect" });
             return false
         }
-        let isEqual = await checkPassword(user.password, req.body.password);
-        if (!isEqual) {
-            res.json({ log: false, info: "Password is incorrect" });
-            return false;
-        }
+       // let isEqual = await checkPassword(user.password, req.body.password);
+        // if (!isEqual) {
+        //     res.json({ log: false, info: "Password is incorrect" });
+        //     return false;
+        // }
         token = jwt.sign({ userId: user._id, email: user.email, password: user.password }, "esim", {
             expiresIn: "20d",
         });
         res.cookie("x-access-token", token);
         res.json({ userId: user._id, email: user.email, token: token, tokenExpiration: 1, log: true });
-        //res.sendFile(__dirname + "/views/" + "newsfeed.html")
     }
     sendRegistCode(req, res) {
         mail.sendMail(req, res);

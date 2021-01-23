@@ -6,7 +6,8 @@ const {
   updateUser,
 } = require("./admin_router");
 const { addUser, loginUser, sendRegistCode } = require("./signup-router");
-const { getInfoUser, changePassword, showSocialUser } = require("./user_router");
+const { getInfoUser, changePassword, showSocialUser, getHomePageInfo, addFriendList } = require("./user_router");
+const { changeProfileImage, getProfileImage } = require("./image_router");
 
 module.exports = {
   showAllUsers,
@@ -20,4 +21,8 @@ module.exports = {
   updateUser,
   changePassword,
   showSocialUser,
+  changeProfileImage,
+  getProfileImage,
+  getHomePageInfo,
+  addFriendList,
 };

@@ -1,5 +1,5 @@
 /* eslint-disable */
-let socket = io();
+// let socket = io();
 let chatWith = null;
 window.onload = () => {
     allUsers();

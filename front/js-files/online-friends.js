@@ -1,30 +1,17 @@
 /* eslint-disable */
-const activeFriendUl = document.getElementById('people-list')
-const Logout = document.querySelector('#Logout')
+const socket = io()
 
 const chatBox = document.querySelector('.chat-box')
-const chatUserName = document.querySelector('.chatUserName')
 const chatMessage = document.querySelector('.text-box')
 const messageText = document.getElementById('messageText')
 const messageUl = document.querySelector('#messageUl')
 
-
 let writeToUser = null;
-function writeWhom(whom) { 
+function writeWhom(whom) {
     writeToUser = whom.id;
+    socket.emit('openChat', localStorage.getItem("userId"))
 }
 
-
-    //allUserUl  await `${data.arrayOfUsers.map(user=>{
-    //    `<li id=${user._id}>${user.name}</li>`
-    // }).join('')}`
-     //`${data.map(user => `<li class='friend' onclick="writeWhom(this)" id=${user._id}>${user.name}</li>`).join('')}`
-   
-   
-
-let userId = localStorage.getItem('userId')
-
-const socket = io()
 function newUserConnected() {
     socket.emit('newUser', userId)
 }
@@ -47,9 +34,10 @@ socket.on('onlineUsers', (data) => {
 
 /* erb vor click es anum online user i vra */
 socket.on('openChat', ({ setUser, userId }) => {
-    chatBox.classList.add('show')
-    chatUserName.innerHTML = setUser.name
-
+    let chatBox = document.getElementById("chatBox");
+    chatBox.classList.add('show');
+    let name = document.getElementById('chatUserName')
+    name.innerHTML = `${setUser.name}`;
 })
 
 socket.on('message', ({ user, data }) => {
@@ -89,26 +77,29 @@ function outputMessage(user, msg) {
 }
 
 function outputOnlineUsers(data) {
-    console.log(data)
-    activeFriendUl.innerHTML = ''
-    activeFriendUl.innerHTML = `${data.map(user => `<li class='friend' onclick="writeWhom(this)" id=${user._id}>${user.name}</li>`).join('')}`
-    for (let elem of activeFriendUl.childNodes) {
-        elem.addEventListener('click', () => {
-            let userid = elem.id;
-            socket.emit('openChat', userid)
-        })
-    }
+    let peopleList = document.getElementById("peopleList");
+    peopleList.innerHTML = '';
+    data.forEach(elem => {
+        let li = document.createElement("li");
+        li.className = "friend";
+        li.setAttribute("onclick", "writeWhom(this)")
+        li.id = `${elem._id}`;
+        li.innerHTML = `${elem.name}`;
+        peopleList.appendChild(li);
+    })
+    // for (let elem of data) {
+    //     elem.addEventListener('click', () => {
+    //         let userid = elem.id;
+    //         socket.emit('openChat', userid)
+    //     })
+    // }
 }
 
-Logout.addEventListener('click', (err) => {
-    if (err) {
-        console.log("error on logOut:", err);
-    }
+function logout() {
     alert('Log out')
     let userId = localStorage.getItem('userId')
     socket.emit('Offline', userId)
-    location.reload();
-})
+}
 
 
 

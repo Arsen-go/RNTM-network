@@ -9,6 +9,7 @@
 	<title>ADR Network</title>
 	<script src="/upload.js"></script>
 	<link rel="icon" href="images/fav.png" type="image/png" sizes="16x16">
+	<script src="/socket.io/socket.io.js"></script>
 	<script src="/about.js"></script>
 	<link rel="stylesheet" href="css/main.min.css">
 	<link rel="stylesheet" href="css/style.css">
@@ -421,7 +422,7 @@
 					</li>
 				</ul>
 				<div class="user-img">
-					<img src="images/resources/admin.jpg" alt="">
+					<img id="rigthCornerUserImg" alt="">
 					<span class="status f-online"></span>
 					<div class="user-setting">
 						<a href="#" title=""><span class="status f-online"></span>online</a>
@@ -457,7 +458,7 @@
 						<div class="col-lg-2 col-sm-3">
 							<div class="user-avatar">
 								<figure>
-									<img src="./images/resources/ad-widget.jpg" alt="" id="img">
+									<img alt="" id="img">
 									<form  class="edit-phto" enctype="multipart/form-data" id="edit-phto">
 										<i class="fa fa-camera-retro"></i>
 										<label class="fileContainer">
@@ -472,9 +473,9 @@
 						<div class="col-lg-10 col-sm-9">
 							<div class="timeline-info">
 								<ul>
-									<li class="admin-name">
-										<h5>Janice Griffith</h5>
-										<span>Group Admin</span>
+									<li  class="admin-name">
+										<h5 id="userName"></h5>
+										
 									</li>
 									<li>
 										<a class="" href="/profile" title="" data-ripple="">time line</a>

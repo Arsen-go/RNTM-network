@@ -3,7 +3,7 @@
 const FriendRequestUl = document.getElementById('FriendRequest')
 
 const FriendRequestCount = document.getElementById('FriendRequestCount')
-const socket = io()
+// const socket = io()
 
 function GetFriendReqest() {
     fetch('/friendRequest', {

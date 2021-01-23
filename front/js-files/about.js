@@ -1,4 +1,6 @@
 window.onload = () => {
+  // let socket = io();
+
   getInfoUser();
 };
 

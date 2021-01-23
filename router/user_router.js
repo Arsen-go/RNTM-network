@@ -25,9 +25,31 @@ async function changePassword(req, res) {
 async function showSocialUser(req, res) {
   try {
     let userId = req.body.userId;
-    // let reult = await User
+    let result = await User.findById(userId).select({ friend: 1, friendRequest: 1 });
+    res.json({ arrayOfUsers: result });
+
   } catch (err) {
     throw new Error("Error on showSocialUser");
+  }
+}
+
+async function getHomePageInfo(req, res) {
+  try {
+    let result = await User.findById(req.body.userId).select({ name: 1, message: 1, friend: 1, profilePhotos: 1 });
+    res.json({ friendsLength: result.friend.length, messagesLength: result.message.length, name: result.name, photo: result.profilePhotos });
+  } catch (err) {
+    console.log("Error on getHomePageInfo", err);
+    throw new Error("Error on getHomePage info");
+  }
+}
+
+async function addFriendList(req, res) {
+  try {
+    let result = await User.find({ _id: { $ne: req.body.userId } }).select({ name: 1, profilePhotos: 1 }).limit(5);
+    res.json({result});
+  } catch (err) {
+    console.log("Error on addFriendList", err);
+    throw new Error("Error with add frien List");
   }
 }
 
@@ -35,4 +57,6 @@ module.exports = {
   getInfoUser,
   changePassword,
   showSocialUser,
+  getHomePageInfo,
+  addFriendList,
 };

@@ -1,4 +1,3 @@
-const cons = require("consolidate")
 const User = require("../models/user-schema")
 
 class IndexController {
@@ -16,14 +15,12 @@ class IndexController {
         res.render('timeline-friends')
     }
     async friendRequest(req, res) {
-        //console.log(req.userObj)
         try {
             let FriendRequestList = await User.findOne({ _id: req.userObj.userId }).populate('friendRequest').exec()
             res.json({ FriendRequestList })
         } catch (err) {
             console.log("error on friendRequest function", err);
         }
-        //console.log(FriendRequestList)
     }
     userMessages(req, res) {
         res.render('messages')
