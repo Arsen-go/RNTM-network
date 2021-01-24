@@ -1,9 +1,10 @@
 const signUpController = require("../controller/signup-controller");
 const schema = require("../validate/joi");
-const User = require("../models/user-schema");
+const { User } = require("../models");
 const { hash, checkPassword } = require("./helper/create_hash");
-const jwt = require("jsonwebtoken");
+const { jwt } = require("../constants");
 const mail = require("./helper/send_mail");
+const { updateOnlineToTrue } = require("../socket")
 
 class SignUpRouter {
     async addUser(req, res) {
@@ -18,7 +19,7 @@ class SignUpRouter {
                     console.log("email exsist");
                     res.json({ info: "Email exsist: try another" });
                 } else {
-                   // let hashPassword = hash(req.body.password);
+                    // let hashPassword = hash(req.body.password);
                     //req.body.password = hashPassword;
                     await signUpController.insertUser(req.body);
                     res.json({ result: true });
@@ -37,6 +38,7 @@ class SignUpRouter {
             try {
                 let decoded = jwt.verify(token, "esim");
                 if (decoded.email === req.body.login && decoded.password === req.body.password) {
+                    updateOnlineToTrue(req.body.userId);
                     return { email: email, token: token, tokenExpiration: 1 };
                 }
             } catch (err) {
@@ -49,7 +51,7 @@ class SignUpRouter {
             res.json({ log: false, info: "Login is incorrect" });
             return false
         }
-       // let isEqual = await checkPassword(user.password, req.body.password);
+        // let isEqual = await checkPassword(user.password, req.body.password);
         // if (!isEqual) {
         //     res.json({ log: false, info: "Password is incorrect" });
         //     return false;
@@ -58,6 +60,7 @@ class SignUpRouter {
             expiresIn: "20d",
         });
         res.cookie("x-access-token", token);
+        updateOnlineToTrue(req.body.userId)
         res.json({ userId: user._id, email: user.email, token: token, tokenExpiration: 1, log: true });
     }
     sendRegistCode(req, res) {

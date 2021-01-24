@@ -43,5 +43,5 @@ fetch('/getProfilePhoto', {
         document.getElementById("userName").innerHTML = result.userName;
     })
     .catch(error => {
-        console.error('Error:', error);
+        console.log('Error:', error);
     });

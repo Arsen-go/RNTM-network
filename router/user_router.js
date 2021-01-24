@@ -1,4 +1,4 @@
-const User = require("../models/user-schema");
+const { User, Post } = require("../models")
 const { checkPassword } = require("./helper/create_hash")
 
 async function getInfoUser(req, res) {
@@ -46,10 +46,34 @@ async function getHomePageInfo(req, res) {
 async function addFriendList(req, res) {
   try {
     let result = await User.find({ _id: { $ne: req.body.userId } }).select({ name: 1, profilePhotos: 1 }).limit(5);
-    res.json({result});
+    res.json({ result });
   } catch (err) {
     console.log("Error on addFriendList", err);
     throw new Error("Error with add frien List");
+  }
+}
+
+async function addPost(req, res) {
+  let obj = {
+    author: req.body.userId,
+    like: 0,
+  }
+
+  if(req.body.text) {
+    obj.text = req.body.text;
+  }
+
+  if(req.file) {
+    obj.image = req.file.filename;
+  }
+ 
+  try {
+    let post = new Post(obj);
+    let savedPost = await post.save();
+    let result = await Post.findById(savedPost._id).populate("author");
+    res.json({result});
+  } catch (error) {
+    throw new Error("Error with add user post",error);
   }
 }
 
@@ -59,4 +83,5 @@ module.exports = {
   showSocialUser,
   getHomePageInfo,
   addFriendList,
+  addPost,
 };

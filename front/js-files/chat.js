@@ -126,6 +126,7 @@ function clearMessages() {
 }
 
 socket.on("msgUserBack", (data) => {
+    alert("namak")
     createMsgTag(data);
 })
 
@@ -136,6 +137,7 @@ socket.on("openChatWithUserBack", (msgArray) => {
 })
 
 function createMsgTag(msg) {
+    console.log(msg)
     let ul = document.getElementById("messageContainer");
     let li = document.createElement("li");
     let browserUser = localStorage.getItem("userId");

@@ -1,12 +1,11 @@
-const User = require("../models/user-schema");
-const userMessage = require("../models/user_message");
+const { User, Message } = require("../models");
 
-class Message {
+class UserMessage {
   async add(msg) {
     try {
-      let msgUser = new userMessage(msg);
+      let msgUser = new Message(msg);
       await msgUser.save();
-      let newMsg = await userMessage.findOne({ from: msg.from, to: msg.to, text: msg.text });
+      let newMsg = await Message.findOne({ from: msg.from, to: msg.to, text: msg.text });
       let user = await User.findOne({ _id: msg.from });
       user.message.push(newMsg._id);
       await user.save();
@@ -17,7 +16,7 @@ class Message {
   }
 
   async getAllMessages(obj) {
-    let message = await userMessage.find({ $or: [{ from: obj.from, to: obj.chatWith }, { from: obj.chatWith, to: obj.from, }] });
+    let message = await Message.find({ $or: [{ from: obj.from, to: obj.chatWith }, { from: obj.chatWith, to: obj.from, }] });
     return message;
   }
 
@@ -31,4 +30,4 @@ class Message {
   // }
 }
 
-module.exports = new Message();
+module.exports = new UserMessage();

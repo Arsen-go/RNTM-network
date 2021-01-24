@@ -1,5 +1,5 @@
-const User = require("../models/user-schema");
-const userMessage = require("../models/user_message");
+const { User, Message } = require("../models")
+
 async function showAllUsers(req, res) {
   try {
     let result = await User.find();
@@ -47,7 +47,7 @@ async function showUserMessages(req, res) {
     console.log(req.body.userId);
     let result = await User.findOne({ _id: req.body.userId }).populate({
       path: "message",
-      model: userMessage,
+      model: Message,
       select: "createdAt text",
       populate: {
         path: "to",
