@@ -1,31 +1,11 @@
 /* eslint-disable */
 window.onload = () => {
   getAllPost();
-  fetch("/home/myPageInfo", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
+  myPageInfo();
+  addFriendList();
+};
 
-    body: JSON.stringify({ userId: localStorage.getItem("userId") }),
-  })
-    .then((res) => {
-      return res.json();
-    })
-    .then((obj) => {
-      console.log("home", obj.photo);
-      let image = (document.getElementById(
-        "myProfilePhoto"
-      ).src = `/images/resources/${obj.photo}`);
-      let rimg = document.getElementById("rigthCornerUserImg");
-      rimg.src = `/images/resources/${obj.photo}`;
-      rimg.style.width = "35px";
-      document.getElementById("myName").innerHTML = obj.name;
-      document.getElementById("messageCount").innerHTML = obj.messagesLength;
-      document.getElementById("friendCount").innerHTML = obj.friendsLength;
-    });
-
+function addFriendList() {
   fetch("/home/addFriendList", {
     method: "POST",
     headers: {
@@ -59,7 +39,37 @@ window.onload = () => {
         ul.appendChild(li);
       });
     });
-};
+}
+
+let myProfilePhoto;
+function myPageInfo() {
+  fetch("/home/myPageInfo", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+
+    body: JSON.stringify({ userId: localStorage.getItem("userId") }),
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((obj) => {
+      console.log("home", obj.photo);
+      let image = (document.getElementById(
+        "myProfilePhoto"
+      ).src = `/images/resources/${obj.photo}`);
+      let rimg = document.getElementById("rigthCornerUserImg");
+      rimg.src = `/images/resources/${obj.photo}`;
+      rimg.style.width = "35px";
+      document.getElementById("myName").innerHTML = obj.name;
+      document.getElementById("messageCount").innerHTML = obj.messagesLength;
+      document.getElementById("friendCount").innerHTML = obj.friendsLength;
+
+      myProfilePhoto = obj.photo;
+    });
+}
 
 function getAllPost() {
   fetch("/getHomePagePost", {
@@ -74,8 +84,10 @@ function getAllPost() {
       return res.json();
     })
     .then((obj) => {
+      console.log(obj)
       obj.result.forEach((post) => {
         postBody(post);
+
       });
     });
 }
@@ -122,36 +134,36 @@ socket.on("likeLength", (data) => {
   document.getElementById(`${data.post._id}count`).innerHTML = data.post.like;
 });
 
-function postBody(result, firstChild) {
+function postBody(post, firstChild) {
   let contain = document.getElementById("loadMore");
-  let post = document.createElement("div");
+  let postArea = document.createElement("div");
   let image = "";
 
-  let id = `id=${result._id}`;
+  let id = `id=${post._id}`;
 
-  if (result.author.profilePhotos) {
+  if (post.author.profilePhotos) {
     image = `
         <figure>
-        <img src="images/resources/${result.author.profilePhotos}" alt="">
+        <img src="images/resources/${post.author.profilePhotos}" alt="">
         </figure>`;
   }
   let userName = `
     <div class="friend-name">
-        <ins><a href="/profile" title="">${result.author.name}</a></ins>
-        <span>published: ${result.createdAt}</span>
+        <ins><a href="/profile" title="">${post.author.name}</a></ins>
+        <span>published: ${post.createdAt}</span>
     </div>
     `;
   let postImage = "";
-  if (result.image) {
+  if (post.image) {
     postImage = `
-        <img src="images/resources/${result.image}" alt="">
+        <img src="images/resources/${post.image}" alt="">
         `;
   }
   let comment = `
         <li>
           <span class="comment" data-toggle="tooltip" title="Comments">
                 <i class="fa fa-comments-o"></i>
-                   <ins>${result.comment.length}</ins>
+                   <ins>${post.comment.length}</ins>
           </span>
         </li>
         `;
@@ -159,11 +171,11 @@ function postBody(result, firstChild) {
     <li>
         <span class="like" data-toggle="tooltip" title="like">
             <i ${id} onclick="addLike(this)" class="ti-heart"></i>
-             <ins id="${result._id}count">${result.like}</ins>
+             <ins id="${post._id}count">${post.like}</ins>
          </span>
     </li>
     `;
-  post.innerHTML = `
+  postArea.innerHTML = `
     <div class="central-meta item">
     <div ${id} class="user-post">
         <div class="friend-info">
@@ -249,50 +261,34 @@ function postBody(result, firstChild) {
                 <div class="description">
 
 															<p>
-																${result.text}
+																${post.text}
 															</p>
         </div>
-        ${commentArea(result._id)}`;
+        ${commentArea(post)}`;
   if (firstChild === "firstChild") {
-    contain.insertBefore(post, contain.firstChild);
+    contain.insertBefore(postArea, contain.firstChild);
   } else {
-    contain.insertBefore(post, contain.firstChild);
+    contain.insertBefore(postArea, contain.firstChild);
   }
 }
 
-function commentArea(postId) {
+function commentArea(post) {
   let comment = `
     <div class="coment-area">
-													<ul class="we-comet">
+													<ul id="${post._id}conntainer" class="we-comet">
 														
-														<li>
-															<div class="comet-avatar">
-																<img src="images/resources/comet-1.jpg" alt="">
-															</div>
-															<div class="we-comment">
-																<div class="coment-head">
-																	<h5><a href="time-line.html" title="">Donald
-																			Trump</a></h5>
-																	<span>1 week ago</span>
-																	<a class="we-reply" href="#" title="Reply"><i
-																			class="fa fa-reply"></i></a>
-																</div>
-																<p>texty coomenti
-																	<i class="em em-smiley"></i>
-																</p>
-															</div>
-														</li>
+														${allPostComments(post)}
 														<li>
 															<a href="#" title="" class="showmore underline">more
 																comments</a>
 														</li>
 														<li class="post-comment">
 															<div class="comet-avatar">
-																<img src="images/resources/comet-1.jpg" alt="">
+																<img src="images/resources/${myProfilePhoto}" alt="">
 															</div>
 															<div class="post-comt-box">
-																<form id="${postId}" onsubmit="writeComment(this); return false">
-																	<textarea id="${postId}text"
+																<form id="${post._id}" onsubmit="writeComment(this); return false">
+																	<textarea id="${post._id}text"
 																		placeholder="Post your comment"></textarea>
 																	<button style="color: silver" >Send</button>
 																</form>
@@ -301,25 +297,72 @@ function commentArea(postId) {
 													</ul>
 												</div>
 											</div>
-                                        </div> 
+                    </div> 
                                         
     `;
   return comment;
 }
 
+function allPostComments(post) {
+  let zut = '';
+  post.comment.forEach((comment) => {
+    let li = document.createElement("li");
+    li.innerHTML = `
+  <div class="comet-avatar">
+    <img src="images/resources/${comment.author.profilePhotos}" alt="">
+  </div>
+  <div class="we-comment">
+    <div class="coment-head">
+      <h5><a href="time-line.html" title="">${comment.author.name}</a></h5>
+      <span>${comment.createdAt}</span>
+      <a class="we-reply" href="#" title="Reply"><i
+          class="fa fa-reply"></i></a>
+    </div>
+    <p>${comment.commentText}</p>
+  </div>
+  `
+    zut += `${li.innerHTML}<br>`
+  })
+
+  return zut;
+}
 
 function writeComment(tag) {
-    alert(tag.id)
-    let commentObj = {
-        postId: tag.id,
-        commentWriter: localStorage.getItem("userId"),
-        commentText: tag[0].value,
-    };
-    socket.emit("newComment", commentObj);
-    tag[0].value = "";
-}   
+  let commentObj = {
+    postId: tag.id,
+    commentWriter: localStorage.getItem("userId"),
+    commentText: tag[0].value,
+  };
+  socket.emit("newComment", commentObj);
+  tag[0].value = "";
+}
 
 socket.on("newComment", (data) => {
-    console.log(data)
-    document.getElementById(`${data.post}`)
+  commentAddedBody(data);
 })
+
+function commentAddedBody(data) {
+  let conntainer = document.getElementById(`${data.post}conntainer`);
+  console.log("comm", conntainer)
+
+  let comment = document.createElement("li");
+  comment.innerHTML = `
+  <div class="comet-avatar">
+    <img src="images/resources/${data.author.profilePhotos}" alt="">
+  </div>
+  <div class="we-comment">
+    <div class="coment-head">
+      <h5><a href="time-line.html" title="">${data.author.name}</a></h5>
+      <span>${data.createdAt}</span>
+      <a class="we-reply" href="#" title="Reply"><i
+          class="fa fa-reply"></i></a>
+    </div>
+    <p>${data.commentText}</p>
+  </div>
+  `
+  // if (firstChild === "firstChild") {
+  //   contain.insertBefore(post, contain.firstChild);
+  // } else {
+  conntainer.insertBefore(comment, conntainer.firstChild);
+  // }
+}

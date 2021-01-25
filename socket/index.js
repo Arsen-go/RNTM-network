@@ -100,7 +100,8 @@ io.on("connection", async (socket) => {
       });
       await newComment.save();
       await Post.findByIdAndUpdate(post.postId, { $push: { comment: newComment._id } });
-      io.emit("newComment", newComment);
+      let result = await PostComment.findById(newComment._id).populate("author","profilePhotos name");
+      io.emit("newComment", result);
     } catch (error) {
       throw new Error("Error on adding post comment", error);
     }

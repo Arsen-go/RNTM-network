@@ -1,4 +1,4 @@
-const { User, Post } = require("../models")
+const { User, Post, PostComment } = require("../models")
 const { checkPassword } = require("./helper/create_hash")
 
 async function getInfoUser(req, res) {
@@ -71,6 +71,9 @@ async function addPost(req, res) {
     let post = new Post(obj);
     let savedPost = await post.save();
     let result = await Post.findById(savedPost._id).populate("author");
+    let user = await User.findById(obj.author);
+    user.post.push(post._id);
+    await user.save();
     res.json({result});
   } catch (error) {
     throw new Error("Error with add user post",error);
@@ -79,7 +82,20 @@ async function addPost(req, res) {
 
 async function allPost(req, res) {
   try{
-    let result = await Post.find({}).populate('author').sort({createdAt: 1})
+    let result = await Post.find({}).populate({
+      path: "author",
+      model: User,
+      select: "name profilePhotos",
+    }).populate({
+      path: "comment",
+      model: PostComment,
+      select: "commentText createdAt",
+      populate: {
+        path: "author",
+        model: User,
+        select: "name profilePhotos",
+      },
+    }).sort({createdAt: 1});
     res.json({result: result})
   } catch(error) {
     throw new Error("Error on find all post",error);
