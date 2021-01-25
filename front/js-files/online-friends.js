@@ -13,7 +13,7 @@ function writeWhom(whom) {
 }
 
 function newUserConnected() {
-    socket.emit('newUser', userId)
+    socket.emit('newUser', localStorage.getItem("userId"))
 }
 newUserConnected()
 

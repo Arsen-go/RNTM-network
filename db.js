@@ -1,12 +1,13 @@
 const mongoose = require('mongoose')
-const url = 'mongodb+srv://ADR:socialnetwork@cluster0.duqbf.mongodb.net/network?retryWrites=true&w=majority'
+const url = 'mongodb://localhost:27017/rntm'
 //Arsen mongodb+srv://ADR:socialnetwork@cluster0.duqbf.mongodb.net/network?retryWrites=true&w=majority
 //Davit mongodb+srv://Davit2001:david440787@cluster0.tgmmt.mongodb.net/SocialNetwork?authSource=admin&replicaSet=atlas-rxigiy-shard-0&w=majority&readPreference=primary&appname=MongoDB%20Compass&retryWrites=true&ssl=true
 mongoose.connect(
     url,
     {
         useNewUrlParser: true,
-        useUnifiedTopology: true
+        useUnifiedTopology: true,
+        useFindAndModify: false,
     },
     () => {
         console.log('connected to database')

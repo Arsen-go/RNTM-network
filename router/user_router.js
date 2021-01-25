@@ -77,6 +77,15 @@ async function addPost(req, res) {
   }
 }
 
+async function allPost(req, res) {
+  try{
+    let result = await Post.find({}).populate('author').sort({createdAt: 1})
+    res.json({result: result})
+  } catch(error) {
+    throw new Error("Error on find all post",error);
+  }
+}
+
 module.exports = {
   getInfoUser,
   changePassword,
@@ -84,4 +93,5 @@ module.exports = {
   getHomePageInfo,
   addFriendList,
   addPost,
+  allPost,
 };

@@ -1,6 +1,14 @@
-const { app, express, cookieParser, bodyParser, path, cons, upload } = require("./constants")
+const {
+  app,
+  express,
+  cookieParser,
+  bodyParser,
+  path,
+  cons,
+  upload,
+} = require("./constants");
 const { server } = require("./socket/index");
-const indexRouter = require('./router/indexRouter');
+const indexRouter = require("./router/indexRouter");
 const router = require("./router");
 
 // middlwares
@@ -17,16 +25,16 @@ app.use(express.static(path.join(__dirname, "node_modules")));
 app.use(express.static(path.join(__dirname, "node_modules")));
 
 // view engine
-app.engine('html', cons.swig)
-app.set('views', path.join(__dirname + '/front', 'views'));
-app.set('view engine', 'html');
+app.engine("html", cons.swig);
+app.set("views", path.join(__dirname + "/front", "views"));
+app.set("view engine", "html");
 
 // server
 server.listen(3000, () => {
   console.log("server listening port-> 3000");
 });
 
-app.use('/', indexRouter)
+app.use("/", indexRouter);
 
 app.post("/registerUser", router.addUser);
 
@@ -48,13 +56,13 @@ app.post("/admin/showUserMessages", router.showUserMessages);
 
 app.post("/editPassword/changeUserPassword", router.changePassword);
 
-app.post("/admin/updateUser", router.updateUser)
+app.post("/admin/updateUser", router.updateUser);
 
 app.post("/getSocialUser", router.showSocialUser);
 
 // app.post('/ConfirmFrienqRequest', ConfirmRequest);
 
-app.post("/editProfileImg", upload.single('edit'), router.changeProfileImage);
+app.post("/editProfileImg", upload.single("edit"), router.changeProfileImage);
 
 app.post("/getProfilePhoto", router.getProfileImage);
 
@@ -62,4 +70,6 @@ app.post("/home/myPageInfo", router.getHomePageInfo);
 
 app.post("/home/addFriendList", router.addFriendList);
 
-app.post("/post", upload.single('file'),router.addPost);
+app.post("/post", upload.single("file"), router.addPost);
+
+app.post("/getHomePagePost", router.allPost);

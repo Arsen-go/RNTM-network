@@ -14,7 +14,8 @@ const PostSchema = new Schema({
         type: Number,
     },
     comment: [{
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'postcomment',
     }],
     image: {
         type: String,

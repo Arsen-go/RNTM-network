@@ -20,7 +20,7 @@ class ImageRouter {
             let result = await User.findById(req.body.userId).select({ profilePhotos: 1, name: 1 });
             res.json({ imageName: result.profilePhotos, userName: result.name })
         } catch (err) {
-            throw new Error("Error on profile photo");
+            throw new Error("Error on profile photo",err);
         }
     }
 
