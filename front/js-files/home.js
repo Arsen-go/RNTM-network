@@ -3,6 +3,7 @@ window.onload = () => {
   getAllPost();
   myPageInfo();
   addFriendList();
+  getAllLikesViewsDislikesCommentsLength();
 };
 
 function addFriendList() {
@@ -63,6 +64,7 @@ function myPageInfo() {
       let rimg = document.getElementById("rigthCornerUserImg");
       rimg.src = `/images/resources/${obj.photo}`;
       rimg.style.width = "35px";
+      imguser.src = `/images/resources/${obj.photo}`;
       document.getElementById("myName").innerHTML = obj.name;
       document.getElementById("messageCount").innerHTML = obj.messagesLength;
       document.getElementById("friendCount").innerHTML = obj.friendsLength;
@@ -84,10 +86,8 @@ function getAllPost() {
       return res.json();
     })
     .then((obj) => {
-      console.log(obj)
       obj.result.forEach((post) => {
         postBody(post);
-
       });
     });
 }
@@ -127,20 +127,26 @@ function sendPost() {
 }
 
 function addLike(tag) {
-  socket.emit("addPostLike", { id: tag.id });
+  let likeId = tag.id.slice(0, 24);
+  socket.emit("addPostLike", { id: likeId });
 }
 
 socket.on("likeLength", (data) => {
-  document.getElementById(`${data.post._id}count`).innerHTML = data.post.like;
+  document.getElementById(`${data.post._id}count`).innerHTML =
+    data.post.like + 1;
 });
 
 function postBody(post, firstChild) {
   let contain = document.getElementById("loadMore");
   let postArea = document.createElement("div");
   let image = "";
+  let postText = "";
 
   let id = `id=${post._id}`;
 
+  if (post.text) {
+    postText = post.text;
+  }
   if (post.author.profilePhotos) {
     image = `
         <figure>
@@ -170,14 +176,30 @@ function postBody(post, firstChild) {
   let like = `
     <li>
         <span class="like" data-toggle="tooltip" title="like">
-            <i ${id} onclick="addLike(this)" class="ti-heart"></i>
+            <i id="${post._id}like" onclick="addLike(this)" class="ti-heart"></i>
              <ins id="${post._id}count">${post.like}</ins>
          </span>
     </li>
     `;
+  let view = `
+    <li>
+      <span class="views" data-toggle="tooltip" title="views">
+        <i class="fa fa-eye"></i>
+        <ins id="${post._id}viewCount">${post.view}</ins>
+      </span>
+    </li>
+    `;
+  let dislike = `
+    <li>
+      <span class="dislike" data-toggle="tooltip" title="dislike">
+        <i id="${post._id}dislike" onclick="dislike(this)" class="ti-heart-broken"></i>
+        <ins id="${post._id}dislikeCount">${post.dislike}</ins>
+      </span>
+    </li>
+    `;
   postArea.innerHTML = `
-    <div class="central-meta item">
-    <div ${id} class="user-post">
+    <div class="central-meta item" >
+    <div ${id} onclick="view(this)"  class="user-post">
         <div class="friend-info">
             ${image}
             ${userName}
@@ -185,22 +207,10 @@ function postBody(post, firstChild) {
             ${postImage}
             <div class="we-video-info">
                     <ul>
-                        <li>
-                            <span class="views" data-toggle="tooltip"
-                                title="views">
-                                <i class="fa fa-eye"></i>
-                                <ins>0</ins>
-                            </span>
-                        </li>
+                        ${view}
                         ${comment}
                         ${like}
-                        <li>
-                            <span class="dislike" data-toggle="tooltip"
-                                title="dislike">
-                                <i class="ti-heart-broken"></i>
-                                <ins>0</ins>
-                            </span>
-                        </li>
+                        ${dislike}
                         <li class="social-media">
                             <div class="menu">
                                 <div class="btn trigger"><i
@@ -261,7 +271,7 @@ function postBody(post, firstChild) {
                 <div class="description">
 
 															<p>
-																${post.text}
+																${postText}
 															</p>
         </div>
         ${commentArea(post)}`;
@@ -274,7 +284,7 @@ function postBody(post, firstChild) {
 
 function commentArea(post) {
   let comment = `
-    <div class="coment-area">
+    <div class="coment-area" style="overflow:auto;max-height:400px">
 													<ul id="${post._id}conntainer" class="we-comet">
 														
 														${allPostComments(post)}
@@ -290,7 +300,8 @@ function commentArea(post) {
 																<form id="${post._id}" onsubmit="writeComment(this); return false">
 																	<textarea id="${post._id}text"
 																		placeholder="Post your comment"></textarea>
-																	<button style="color: silver" >Send</button>
+                                  <button style="color: silver" >Send</button>
+                                  
 																</form>
 															</div>
 														</li>
@@ -304,7 +315,7 @@ function commentArea(post) {
 }
 
 function allPostComments(post) {
-  let zut = '';
+  let zut = "";
   post.comment.forEach((comment) => {
     let li = document.createElement("li");
     li.innerHTML = `
@@ -320,14 +331,18 @@ function allPostComments(post) {
     </div>
     <p>${comment.commentText}</p>
   </div>
-  `
-    zut += `${li.innerHTML}<br>`
-  })
+  `;
+    zut += `${li.innerHTML}<br>`;
+  });
 
   return zut;
 }
 
 function writeComment(tag) {
+  if (!tag[0].value.length) {
+    return;
+  }
+
   let commentObj = {
     postId: tag.id,
     commentWriter: localStorage.getItem("userId"),
@@ -339,11 +354,11 @@ function writeComment(tag) {
 
 socket.on("newComment", (data) => {
   commentAddedBody(data);
-})
+});
 
 function commentAddedBody(data) {
   let conntainer = document.getElementById(`${data.post}conntainer`);
-  console.log("comm", conntainer)
+  console.log("comm", conntainer);
 
   let comment = document.createElement("li");
   comment.innerHTML = `
@@ -359,10 +374,60 @@ function commentAddedBody(data) {
     </div>
     <p>${data.commentText}</p>
   </div>
-  `
+  `;
   // if (firstChild === "firstChild") {
   //   contain.insertBefore(post, contain.firstChild);
   // } else {
   conntainer.insertBefore(comment, conntainer.firstChild);
   // }
+}
+
+function view(tag) {
+  socket.emit("view", { postId: tag.id });
+}
+
+socket.on("viewLength", (data) => {
+  document.getElementById(`${data.post._id}viewCount`).innerHTML =
+    data.post.view + 1;
+});
+
+function dislike(tag) {
+  let dislikeId = tag.id.slice(0, 24);
+  socket.emit("dislike", { postId: dislikeId });
+}
+
+socket.on("dislikeLength", (data) => {
+  document.getElementById(`${data.post._id}dislikeCount`).innerHTML =
+    data.post.dislike + 1;
+});
+
+function getAllLikesViewsDislikesCommentsLength() {
+  fetch("/home/likesDislikesViewsComments", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+
+    body: JSON.stringify({ userId: localStorage.getItem("userId") }),
+  })
+    .then((res) => {
+      return res.json();
+    })
+    .then((obj) => {
+      let lengthLike = 0;
+      let lengthView = 0;
+      let lengthDislike = 0;
+      let commentLength = 0;
+      obj.result.forEach((data) => {
+        lengthLike += data.like;
+        lengthView += data.view;
+        lengthDislike += data.dislike;
+        commentLength += data.comment.length;
+      });
+      allLikes.innerHTML = `${lengthLike}<i class="ti-heart">` ;
+      allViews.innerHTML = `${lengthView}<i class="ti-eye"></i>` ;
+      allDislikes.innerHTML = `${lengthDislike}<i style="color: red;" class="ti-heart-broken"></i>` ;
+      allCommentsLength.innerHTML = `${commentLength}<i class="fa fa-comments-o"></i>`
+    });
 }

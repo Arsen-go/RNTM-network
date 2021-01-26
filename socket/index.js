@@ -99,11 +99,38 @@ io.on("connection", async (socket) => {
         commentText: post.commentText,
       });
       await newComment.save();
-      await Post.findByIdAndUpdate(post.postId, { $push: { comment: newComment._id } });
-      let result = await PostComment.findById(newComment._id).populate("author","profilePhotos name");
+      await Post.findByIdAndUpdate(post.postId, {
+        $push: { comment: newComment._id },
+      });
+      let result = await PostComment.findById(newComment._id).populate(
+        "author",
+        "profilePhotos name"
+      );
       io.emit("newComment", result);
     } catch (error) {
       throw new Error("Error on adding post comment", error);
+    }
+  });
+
+  socket.on("view", async (post) => {
+    try {
+      let result = await Post.findByIdAndUpdate(post.postId, {
+        $inc: { view: 1 },
+      }).select({ view: 1 });
+      io.emit("viewLength", { post: result });
+    } catch (error) {
+      throw new Error("Error adding view", error);
+    }
+  });
+
+  socket.on("dislike", async (post) => {
+    try {
+      let result = await Post.findByIdAndUpdate(post.postId, {
+        $inc: { dislike: 1 },
+      }).select({ dislike: 1 });
+      io.emit("dislikeLength", { post: result });
+    } catch (error) {
+      throw new Error("Error adding dislike", error);
     }
   });
   // end post like,comment,dislike

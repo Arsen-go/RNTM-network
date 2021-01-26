@@ -73,3 +73,5 @@ app.post("/home/addFriendList", router.addFriendList);
 app.post("/post", upload.single("file"), router.addPost);
 
 app.post("/getHomePagePost", router.allPost);
+
+app.post("/home/likesDislikesViewsComments", router.getAllLikesViewsDislikesCommentsLength);

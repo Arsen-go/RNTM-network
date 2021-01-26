@@ -57,6 +57,8 @@ async function addPost(req, res) {
   let obj = {
     author: req.body.userId,
     like: 0,
+    dislike: 0,
+    view: 0,
   }
 
   if(req.body.text) {
@@ -102,6 +104,15 @@ async function allPost(req, res) {
   }
 }
 
+async function getAllLikesViewsDislikesCommentsLength(req, res) {
+  try {
+    const result = await Post.find({author: req.body.userId}).select({like: 1, view: 1, dislike: 1, comment: 1});
+    res.json({result: result});
+  } catch(error) {
+    throw new Error("Error with get all likes function");
+  }
+}
+
 module.exports = {
   getInfoUser,
   changePassword,
@@ -110,4 +121,5 @@ module.exports = {
   addFriendList,
   addPost,
   allPost,
+  getAllLikesViewsDislikesCommentsLength,
 };
