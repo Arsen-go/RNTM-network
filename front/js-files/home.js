@@ -425,9 +425,114 @@ function getAllLikesViewsDislikesCommentsLength() {
         lengthDislike += data.dislike;
         commentLength += data.comment.length;
       });
-      allLikes.innerHTML = `${lengthLike}<i class="ti-heart">` ;
-      allViews.innerHTML = `${lengthView}<i class="ti-eye"></i>` ;
-      allDislikes.innerHTML = `${lengthDislike}<i style="color: red;" class="ti-heart-broken"></i>` ;
-      allCommentsLength.innerHTML = `${commentLength}<i class="fa fa-comments-o"></i>`
+      allLikes.innerHTML = `${lengthLike}<i class="ti-heart">`;
+      allViews.innerHTML = `${lengthView}<i class="ti-eye"></i>`;
+      allDislikes.innerHTML = `${lengthDislike}<i style="color: red;" class="ti-heart-broken"></i>`;
+      allCommentsLength.innerHTML = `${commentLength}<i class="fa fa-comments-o"></i>`;
     });
 }
+
+function openVideoCamera() {
+  startup();
+  document.getElementById("webcam").style.display = "inline";
+}
+
+async function stop(e) {
+  document.getElementById("webcam").style.display = "none";
+  let stream = video.srcObject;
+  let tracks = stream.getTracks();
+  for (let i = 0; i < tracks.length; i++) {
+    let track = tracks[i];
+    track.stop();
+  }
+
+  video.srcObject = null;
+}
+
+let width = 320;
+let height = 0;
+
+let streaming = false;
+
+let video = null;
+let canvas = null;
+let photo = null;
+let startbutton = null;
+
+function startup() {
+  video = document.getElementById("video");
+  canvas = document.getElementById("canvas");
+  photo = document.getElementById("photo");
+  startbutton = document.getElementById("startbutton");
+
+  navigator.mediaDevices
+    .getUserMedia({
+      video: true,
+      audio: false,
+    })
+    .then(function (stream) {
+      video.srcObject = stream;
+      video.play();
+    })
+    .catch(function (err) {
+      console.log("An error occurred: " + err);
+    });
+
+  video.addEventListener(
+    "canplay",
+    function (ev) {
+      if (!streaming) {
+        height = video.videoHeight / (video.videoWidth / width);
+
+        if (isNaN(height)) {
+          height = width / (4 / 3);
+        }
+
+        video.setAttribute("width", width);
+        video.setAttribute("height", height);
+        canvas.setAttribute("width", width);
+        canvas.setAttribute("height", height);
+        streaming = true;
+      }
+    },
+    false
+  );
+
+  startbutton.addEventListener(
+    "click",
+    function (ev) {
+      takepicture();
+      document.getElementById("outputPhoto").style.display = "inline";
+      ev.preventDefault();
+    },
+    false
+  );
+
+  clearphoto();
+}
+
+function clearphoto() {
+  let context = canvas.getContext("2d");
+  context.fillStyle = "#AAA";
+  context.fillRect(0, 0, canvas.width, canvas.height);
+
+  let data = canvas.toDataURL("image/png");
+  photo.setAttribute("src", data);
+}
+
+function takepicture() {
+  let context = canvas.getContext("2d");
+  if (width && height) {
+    canvas.width = width;
+    canvas.height = height;
+    context.drawImage(video, 0, 0, width, height);
+
+    let data = canvas.toDataURL("image/png");
+    // console.log(atob(data))
+    photo.setAttribute("src", data);
+  } else {
+    clearphoto();
+  }
+}
+
+window.addEventListener("load", startup, false);
