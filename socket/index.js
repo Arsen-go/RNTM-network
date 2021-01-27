@@ -13,13 +13,24 @@ const controlMessage = require("../controller/control_message");
 const { Post, PostComment } = require("../models");
 
 let onlineSockets = {};
+io.use(function(socket, next) {
+ next();
+});
 
 io.on("connection", async (socket) => {
   console.log("Connected:", socket.id);
 
   socket.on("newUser", async (userId) => {
-    onlineSockets[userId] = socket.id;
+    console.log(userId)
 
+    // if(onlineSockets[userId]) {
+    //   console.log("if",onlineSockets[userId])
+    // }else{
+    //   console.log("else")
+      onlineSockets[userId] = socket.id
+    // }
+    
+    console.log("ssss",onlineSockets)
     updateOnlineToTrue(userId);
     io.emit("onlineUsers", await onlineUsers());
   });
@@ -43,13 +54,18 @@ io.on("connection", async (socket) => {
 
   // shortcuts messages code start
   socket.on("msgUser", async (msgObj) => {
-    console.log(msgObj);
+    // console.log(msgObj);
+    console.log("mmm",onlineSockets)
+    
     let result = await controlMessage.add(msgObj);
-    console.log(onlineSockets[msgObj.to]);
-    io.to(onlineSockets[msgObj.to]).emit("msgUserBack", result);
+    // console.log(onlineSockets[msgObj.to]);
+    io.sockets.to(onlineSockets[msgObj.to]).emit("msgUserBack", result);
+    // io.to(onlineSockets[msgObj.to]).emit("msgUserBack", result);
   });
 
   socket.on("openChatWithUser", async (obj) => {
+    io.to(obj.to).emit('hi');
+
     io.to(onlineSockets[obj.to]).emit(
       "openChatWithUserBack",
       await controlMessage.getAllMessages(obj)

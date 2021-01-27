@@ -1,9 +1,12 @@
 /* eslint-disable */
-// let socket = io();
+const socket = io.connect('http://localhost:3000');
 let chatWith = null;
 window.onload = () => {
     allUsers();
-
+    function newUserConnected() {
+        socket.emit('newUser', localStorage.getItem("userId"))
+    }
+    newUserConnected()
 }
 
 function allUsers() {
@@ -127,6 +130,7 @@ function clearMessages() {
 
 socket.on("msgUserBack", (data) => {
     alert("namak")
+    console.log(data)
     createMsgTag(data);
 })
 
