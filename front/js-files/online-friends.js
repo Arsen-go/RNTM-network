@@ -1,5 +1,5 @@
-/* eslint-disable */
-const socket = io()
+// /* eslint-disable */
+const socket = io.connect('http://localhost:3000');
 
 const chatBox = document.querySelector('.chat-box')
 const chatMessage = document.querySelector('.text-box')
@@ -100,6 +100,3 @@ function logout() {
     let userId = localStorage.getItem('userId')
     socket.emit('Offline', userId)
 }
-
-
-

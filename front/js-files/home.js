@@ -4,6 +4,10 @@ window.onload = () => {
   myPageInfo();
   addFriendList();
   getAllLikesViewsDislikesCommentsLength();
+  function newUserConnected() {
+    socket.emit('newUser', localStorage.getItem("userId"))
+}
+newUserConnected()
 };
 
 function addFriendList() {
@@ -535,4 +539,4 @@ function takepicture() {
   }
 }
 
-window.addEventListener("load", startup, false);
+// window.addEventListener("load", startup, false);
