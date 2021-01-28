@@ -1,12 +1,34 @@
 /* eslint-disable */
-const socket = io.connect('http://localhost:3000');
+// const socket = io.connect('http://localhost:3000');
 let chatWith = null;
+let userImage = "";
 window.onload = () => {
+    getUserInfo();
     allUsers();
-    function newUserConnected() {
-        socket.emit('newUser', localStorage.getItem("userId"))
-    }
-    newUserConnected()
+    socket.emit('newUser', localStorage.getItem("userId"))
+}
+
+function getUserInfo() {
+    fetch("/getInfoUser", {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+        body: JSON.stringify({userId: localStorage.getItem("userId")}),
+    })
+        .then((res) => {
+            return res.json();
+        })
+        .then((obj) => {
+            console.log(obj)
+            userImage = obj.profilePhotos;
+            document.getElementById("userName").innerHTML = obj.name;
+            let rimguser = document.getElementById("rigthCornerUserImg");
+            rimguser.src = `/images/resources/${obj.profilePhotos}`;
+            rimguser.style.width = "35px";
+            userProfilePhoto.src = `images/resources/${obj.profilePhotos}`
+        });
 }
 
 function allUsers() {
@@ -34,7 +56,12 @@ function createMessangerUser(data) {
             let li = document.createElement("li");
 
             let figure = document.createElement("figure");
+
             let img = document.createElement("img");
+            img.src = `/images/resources/${element.profilePhotos}`;
+            img.setAttribute("name", `${element.name}`);
+
+
             let figureSpan = document.createElement("span");
             figureSpan.className = "status f-online"
             figure.appendChild(img);
@@ -58,6 +85,7 @@ function createMessangerUser(data) {
 }
 
 function openChat(userTag) {
+    console.log(userTag)
     chatWith = userTag.getAttribute('id');
     let from = localStorage.getItem("userId");
     socket.emit("openChatWithUser", { from, chatWith });
@@ -78,7 +106,6 @@ function openChat(userTag) {
     div.class = "conversation-head";
     let figure = document.createElement("figure");
     let img = document.createElement("img");
-    img.src = `images/resources/friend-avatar.jpg`;
     figure.appendChild(img);
     figure.appendChild(a);
     let span = document.createElement("span");
@@ -129,7 +156,6 @@ function clearMessages() {
 }
 
 socket.on("msgUserBack", (data) => {
-    alert("namak")
     console.log(data)
     createMsgTag(data);
 })
@@ -152,7 +178,7 @@ function createMsgTag(msg) {
         img.src = "images/resources/friend-avatar.jpg";
     } else {
         li.className = "you";
-        img.src = "images/resources/userlist-1.jpg";
+        img.src = `images/resources/${userImage}`;
     }
     let figure = document.createElement("figure");
 

@@ -18,12 +18,27 @@ class Friend {
         }
     }
 
-    async friendRequest(req, res) {
+    async friendRequest(data) {
         try {
-            let FriendRequestList = await User.findOne({ _id: req.userObj.userId }).populate('friendRequest').exec()
-            res.json({ FriendRequestList })
+            const user = await User.findOne({ _id: data.friendsId });
+            if (!user) {
+                throw new Error("User is not found!");
+            }
+
+            if (user.friendRequest.some(u => u.toString() === data.userId.toString())) {
+                return false;
+            }
+
+            user.friendRequest.push(data.userId);
+            await user.save();
+            const reqUser = await User.findById(data.userId).select({name: 1, profilePhotos: 1, friendRequest: 1})
+            reqUser.friendRequest.push(data.friendsId);
+            await reqUser.save();
+
+            return reqUser;
         } catch (err) {
             console.log("error on friendRequest function", err);
+            return false;
         }
     }
 }

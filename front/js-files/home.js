@@ -4,11 +4,36 @@ window.onload = () => {
   myPageInfo();
   addFriendList();
   getAllLikesViewsDislikesCommentsLength();
-  function newUserConnected() {
-    socket.emit('newUser', localStorage.getItem("userId"))
-}
-newUserConnected()
+  socket.emit('newUser', localStorage.getItem("userId"))
 };
+
+let notificationLength = 0;
+let unReadMessages = 0;
+
+socket.on("msgUserBack", (data) => {
+  ++unReadMessages;
+  document.getElementById("newMessages").innerHTML = unReadMessages + " New Messages";
+  document.getElementById("unReadMessages").innerHTML = unReadMessages;
+  showUnreadMessages(data);
+})
+
+function showUnreadMessages(data) {
+  let ul = document.getElementById("dropsmenu");
+  let li = document.createElement("li");
+  li.innerHTML = `
+  <a href="notifications.html" title="">
+    <img src="images/resources/${data.from.profilePhotos}" alt="">
+    <div class="mesg-meta">
+      <h6>${data.from.name}</h6>
+      <span>${data.text}</span>
+      <i>${data.createdAt}</i>
+    </div>
+  </a>
+  <span class="tag green">New</span>
+  `
+  ul.insertBefore(li, ul.firstChild);
+
+}
 
 function addFriendList() {
   fetch("/home/addFriendList", {
@@ -25,23 +50,16 @@ function addFriendList() {
     })
     .then((obj) => {
       obj.result.forEach((element) => {
+        let friendsList = document.createElement("li");
+        friendsList.innerHTML = ` 
+					<figure><img src="images/resources/${element.profilePhotos}" alt=""></figure>
+					<div class="friend-meta">
+						<h4><a href="time-line.html" title="">${element.name}</a></h4>
+						<a href="#" title="" onclick="addFriend(this)" id="${element._id}" class="underline">Add Friend</a>
+					</div>       
+        `
         let ul = document.getElementById("addFriendList");
-
-        let li = document.createElement("div");
-        let p = document.createElement("p");
-        p.innerHTML = `Add ${element.name} to your friend`;
-        p.setAttribute("onclick", "addFriend(this)");
-        p.id = element._id;
-        let figure = document.createElement("figure");
-
-        let img = document.createElement("img");
-        img.src = `/images/resources/${element.profilePhotos}`;
-        img.style.width = "50px";
-        figure.appendChild(img);
-        figure.appendChild(p);
-
-        li.appendChild(figure);
-        ul.appendChild(li);
+        ul.insertBefore(friendsList, ul.firstChild);
       });
     });
 }
@@ -61,7 +79,7 @@ function myPageInfo() {
       return res.json();
     })
     .then((obj) => {
-      console.log("home", obj.photo);
+      console.log(obj)
       let image = (document.getElementById(
         "myProfilePhoto"
       ).src = `/images/resources/${obj.photo}`);
@@ -72,6 +90,25 @@ function myPageInfo() {
       document.getElementById("myName").innerHTML = obj.name;
       document.getElementById("messageCount").innerHTML = obj.messagesLength;
       document.getElementById("friendCount").innerHTML = obj.friendsLength;
+      document.getElementById("notificationLength").innerHTML = notificationLength;
+      let ul = document.getElementById("drops-menu");
+
+      document.getElementById("notificationLength").innerHTML = obj.friends.length;
+      obj.friends.forEach((req) => {
+        let li = document.createElement("li");
+        li.innerHTML = `
+      <li>
+        <a href="notifications.html" title="">
+        <img src="images/resources/${req.profilePhotos}" alt="">
+        <div class="mesg-meta">
+          <h6>${req.name}</h6>
+          <span>Sent you a friend request</span>
+        </div>
+        </a>
+      </li>
+      `
+        ul.insertBefore(li, ul.firstChild);
+      })
 
       myProfilePhoto = obj.photo;
     });
@@ -97,8 +134,34 @@ function getAllPost() {
 }
 
 function addFriend(tag) {
-  alert("still not defined");
+  console.log(tag);
+  socket.emit("friendRequest", { friendsId: tag.id, userId: localStorage.getItem("userId") });
+  let myobj = document.getElementById(`${tag.id}`);
+  myobj.remove();
 }
+
+socket.on("friendRequestBack", (data) => {
+  if (data.isSend) {
+    ++notificationLength;
+    document.getElementById("notificationLength").innerHTML = notificationLength;
+    let li = document.createElement("li");
+    let ul = document.getElementById("drops-menu");
+    li.innerHTML = `
+    <li>
+			<a href="notifications.html" title="">
+			<img src="images/resources/${data.user.profilePhotos}" alt="">
+			<div class="mesg-meta">
+				<h6>${data.user.name}</h6>
+				<span>Sent you a friend request</span>
+			</div>
+			</a>
+		</li>
+    `
+    ul.insertBefore(li, ul.firstChild);
+  } else {
+    alert("che")
+  }
+});
 
 function sendPost() {
   if (!postTextInput.value && !postPhoto.value) {
@@ -538,5 +601,3 @@ function takepicture() {
     clearphoto();
   }
 }
-
-// window.addEventListener("load", startup, false);
