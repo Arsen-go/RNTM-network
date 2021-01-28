@@ -8,8 +8,10 @@ const {
 const { addUser, loginUser, sendRegistCode } = require("./signup-router");
 const { getInfoUser, changePassword, showSocialUser, getHomePageInfo, addFriendList, addPost, allPost, getAllLikesViewsDislikesCommentsLength } = require("./user_router");
 const { changeProfileImage, getProfileImage } = require("./image_router");
+const Friend = require("./friend-router");
 
 module.exports = {
+  Friend,
   showAllUsers,
   deleteUser,
   addUser,

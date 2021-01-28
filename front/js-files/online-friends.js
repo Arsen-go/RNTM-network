@@ -1,8 +1,6 @@
 // /* eslint-disable */
-const socket = io.connect('http://localhost:3000');
+// const socket = io.connect('http://localhost:3000');
 
-const chatBox = document.querySelector('.chat-box')
-const chatMessage = document.querySelector('.text-box')
 const messageText = document.getElementById('messageText')
 const messageUl = document.querySelector('#messageUl')
 

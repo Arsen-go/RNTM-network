@@ -2,7 +2,7 @@ const { app } = require("../constants");
 const http = require("http");
 const server = http.createServer(app);
 const io = require("socket.io")(server);
-
+const { Friend } = require("../router");
 const {
   findUser,
   onlineUsers,
@@ -10,11 +10,12 @@ const {
   updateOnlineToTrue,
 } = require("./socket_helper");
 const controlMessage = require("../controller/control_message");
-const { Post, PostComment } = require("../models");
+const { Post, PostComment, Message } = require("../models");
+const { boolean, bool } = require("joi");
 
 let onlineSockets = {};
-io.use(function(socket, next) {
- next();
+io.use(function (socket, next) {
+  next();
 });
 
 io.on("connection", async (socket) => {
@@ -27,10 +28,10 @@ io.on("connection", async (socket) => {
     //   console.log("if",onlineSockets[userId])
     // }else{
     //   console.log("else")
-      onlineSockets[userId] = socket.id
+    onlineSockets[userId] = socket.id
     // }
-    
-    console.log("ssss",onlineSockets)
+
+    console.log("ssss", onlineSockets)
     updateOnlineToTrue(userId);
     io.emit("onlineUsers", await onlineUsers());
   });
@@ -54,13 +55,12 @@ io.on("connection", async (socket) => {
 
   // shortcuts messages code start
   socket.on("msgUser", async (msgObj) => {
-    // console.log(msgObj);
-    console.log("mmm",onlineSockets)
-    
-    let result = await controlMessage.add(msgObj);
-    // console.log(onlineSockets[msgObj.to]);
-    io.sockets.to(onlineSockets[msgObj.to]).emit("msgUserBack", result);
-    // io.to(onlineSockets[msgObj.to]).emit("msgUserBack", result);
+    console.log("mmm", onlineSockets)
+
+    const result = await controlMessage.add(msgObj);
+    const withSender = await Message.findById(result._id).populate("from", "name profilePhotos");
+
+    io.sockets.to(onlineSockets[msgObj.to]).emit("msgUserBack", withSender);
   });
 
   socket.on("openChatWithUser", async (obj) => {
@@ -73,18 +73,16 @@ io.on("connection", async (socket) => {
   });
 
   socket.on("friendRequest", async (data) => {
-    console.log("friendRequest");
-    let { from, to } = data;
-    let user = await findUser(to);
-    user.friendRequest.push(from);
-    user.save((err) => {
-      if (err) console.log("err", err);
-    });
-    io.emit("friendRequest");
-  });
-
-  socket.on("FriendRequestPage", () => {
-    console.log("FriendRequestPageaaa");
+    try {
+      const isAdded = await Friend.friendRequest(data);
+      if(isAdded) {
+        io.sockets.to(onlineSockets[data.friendsId]).emit("friendRequestBack", { isSend: true, user: isAdded });
+      } else {
+        io.sockets.to(onlineSockets[data.userId]).emit("friendRequestBack", { isSend: false });
+      }
+    } catch (error) {
+      throw new Error("Error on friendRequest socket", error)
+    }
   });
 
   // socket.on('deleteUserMsg',async (friendId) => {

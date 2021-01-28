@@ -3,13 +3,14 @@ const { User, Message } = require("../models");
 class UserMessage {
   async add(msg) {
     try {
-      let msgUser = new Message(msg);
-      await msgUser.save();
-      let newMsg = await Message.findOne({ from: msg.from, to: msg.to, text: msg.text });
-      let user = await User.findOne({ _id: msg.from });
-      user.message.push(newMsg._id);
+      const msgUser = new Message(msg);
+      const savedMessage = await msgUser.save();
+
+      // const newMsg = await Message.findOne({ from: msg.from, to: msg.to, text: msg.text });
+      const user = await User.findOne({ _id: msg.from });
+      user.message.push(savedMessage._id);
       await user.save();
-      return newMsg
+      return savedMessage;
     } catch (err) {
       console.log("error on save message: ", err);
     }
