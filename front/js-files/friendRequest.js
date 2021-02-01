@@ -1,135 +1,67 @@
-// /* eslint-disable */
+/* eslint-disable */
+window.onload = () => {
+    myPageInfo();
+};
 
-const FriendRequestUl = document.getElementById('FriendRequest')
-
-const FriendRequestCount = document.getElementById('FriendRequestCount')
-// const socket = io()
-
-function GetFriendReqest() {
-    fetch('/friendRequest', {
-        method: 'POST',
+function myPageInfo() {
+    fetch("/home/myPageInfo", {
+        method: "POST",
         headers: {
-            'Accept': 'application/json'
-        }
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
+
+        body: JSON.stringify({ userId: localStorage.getItem("userId") }),
     })
-        .then(res => res.json())
-        .then(async data => {
+        .then((res) => {
+            return res.json();
+        })
+        .then((obj) => {
+            console.log(obj)
+            friendRequestListForm(obj);
+            messageLength.innerHTML = obj.messagesLength;
+            notificationLength.innerHTML = obj.friendRequest.length;
+            friendLength.innerHTML = obj.friendsLength;
+            FriendRequestCount.innerHTML = obj.friendRequest.length;
+        });
+}
 
-            let { FriendRequestList } = await data
-            await outputFriendRequest(FriendRequestList)
+function getFriendRequest() {
+    fetch("/friendRequests", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+        },
 
-        }).catch(err => {
-            console.log(err)
+        body: JSON.stringify({ userId: localStorage.getItem("userId") }),
+    })
+        .then((res) => {
+            return res.json();
+        })
+        .then((obj) => {
+            friendRequestListForm(obj.result);
         })
 }
-GetFriendReqest()
 
-function outputFriendRequest(FriendRequestList) {
-    FriendRequestCount.innerHTML = FriendRequestList.friendRequest.length
-    FriendRequestList.friendRequest.map(user => {
-        let li = document.createElement('li')
-        li.classList = "FrendRequest"
-        let divContainer = document.createElement('div')
-        divContainer.className = 'nearly-pepls'
-        //user i nkari mas
-        let figure = document.createElement('figure')
-        let a = document.createElement('a')
-        let img = document.createElement('img')
-        img.src = `images/resources/${user.profilePhotos}`
-        a.append(img)
-        figure.append(a)
-        divContainer.append(figure)
-        li.append(divContainer)
-        FriendRequestUl.append(li)
+function friendRequestListForm(data) {
+    let ul = document.getElementById("FriendRzeqsuest");
+    data.friendRequest.forEach(elem => {
+        let li = document.createElement("li");
+        li.innerHTML = `
+        <div class="nearly-pepls">
+            <figure>
+                <a href="time-line.html" title=""><img src="images/resources/${elem.profilePhotos}" alt=""></a>
+            </figure>
+            <div class="pepl-info">
+                <h4><a href="time-line.html" title="">${elem.name}</a></h4>
+                <span>${elem.gender}</span>
+                <a href="#" title="" onclick="cancelFriendRequest()" class="add-butn more-action" data-ripple="">Cancel</a>
+                <a href="#" onclick="confirmFriendRequest()" title="" class="add-butn" data-ripple="">Confirm</a>
+            </div>
+        </div>
+    `
+        ul.append(li);
+    });
 
-        // user i anun u Friend request i knopkeq@
-
-        let usersDiv = document.createElement('div')
-        usersDiv.className = 'pepl-info'
-        let H4 = document.createElement('h4')
-
-        // user i anuni vra vor smenq gna ira ej
-        let RenderUserPage = document.createElement('a')
-        RenderUserPage.innerHTML = user.name
-        H4.append(RenderUserPage)
-        usersDiv.append(H4)
-
-        //let attr = document.createAttribute('data-ripple')
-        let DeleteRequest = document.createElement('a')
-        DeleteRequest.className = 'add-butn more-action'
-        DeleteRequest.setAttribute('name', 'Delete')
-        //DeleteRequest.setAttributeNode(attr)
-        DeleteRequest.innerHTML = 'delete Request'
-        DeleteRequest.id = user._id
-        let ConfirmRequest = document.createElement('a')
-        ConfirmRequest.className = 'add-butn'
-        ConfirmRequest.setAttribute('name', 'Confirm')
-        ConfirmRequest.innerHTML = 'Confirm'
-        ConfirmRequest.id = user._id
-        //ConfirmRequest.setAttributeNode(attr)
-
-        usersDiv.append(DeleteRequest)
-        usersDiv.append(ConfirmRequest)
-        divContainer.append(usersDiv)
-    })
-    ClickDeleteOrConfirm(FriendRequestList)
-}
-function ClickDeleteOrConfirm(FriendRequestList) {
-
-    const Delete = document.getElementsByName('Delete')
-    const Confirm = document.getElementsByName('Confirm')
-    const FrendRequestLi = document.querySelectorAll('.FrendRequest')
-
-    // Frienq Request Confirm 
-    for (let i = 0; i < Confirm.length; i++) {
-        Confirm[i].addEventListener('click', () => {
-            /* fetch server to delete that frienq request and add that user 
-            in a friends
-            */
-            fetch('/ConfirmFrienqRequest', {
-                method: "POST",
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    from: localStorage.getItem('userId'),
-                    to: Confirm[i].id
-                })
-            }).then(res => res.json())
-                .then(data => {
-                    if (data.message) {
-
-                        socket.emit('ConfirmRequest', data.info)
-                        alert(data.message)
-                        FrendRequestLi[i].remove()
-                    }
-                })
-        })
-    }
-
-    // Delete Friend request 
-    for (let i = 0; i < Delete.length; i++) {
-        Delete[i].addEventListener('click', () => {
-            //console.log(FriendRequestList)
-
-            fetch('/DeleteFrienqRequest', {
-                method: "POST",
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify({
-                    from: localStorage.getItem('userId'),
-                    to: Delete[i].id
-                })
-            }).then(res => res.json())
-                .then(data => {
-                    if (data.message) {
-                        alert(data.message)
-                        FrendRequestLi[i].remove()
-                    }
-                })
-        })
-
-
-    }
 }

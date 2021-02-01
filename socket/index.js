@@ -2,7 +2,7 @@ const { app } = require("../constants");
 const http = require("http");
 const server = http.createServer(app);
 const io = require("socket.io")(server);
-const { Friend } = require("../router");
+const { friendRequest } = require("../router");
 const {
   findUser,
   onlineUsers,
@@ -74,7 +74,7 @@ io.on("connection", async (socket) => {
 
   socket.on("friendRequest", async (data) => {
     try {
-      const isAdded = await Friend.friendRequest(data);
+      const isAdded = await friendRequest(data);
       if(isAdded) {
         io.sockets.to(onlineSockets[data.friendsId]).emit("friendRequestBack", { isSend: true, user: isAdded });
       } else {
