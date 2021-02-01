@@ -34,8 +34,8 @@ async function showSocialUser(req, res) {
 
 async function getHomePageInfo(req, res) {
   try {
-    let result = await User.findById(req.body.userId).populate("friendRequest","name profilePhotos").select({ name: 1, message: 1, friend: 1, profilePhotos: 1, friendRequest: 1 });
-    res.json({ friendsLength: result.friend.length, messagesLength: result.message.length, name: result.name, photo: result.profilePhotos, friends: result.friendRequest });
+    let result = await User.findById(req.body.userId).populate("friendRequest","name profilePhotos gender").select({ name: 1, message: 1, friend: 1, profilePhotos: 1, friendRequest: 1 });
+    res.json({ friendsLength: result.friend.length, messagesLength: result.message.length, name: result.name, photo: result.profilePhotos, friendRequest: result.friendRequest });
   } catch (err) {
     console.log("Error on getHomePageInfo", err);
     throw new Error("Error on getHomePage info");

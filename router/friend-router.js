@@ -31,7 +31,7 @@ class Friend {
 
             user.friendRequest.push(data.userId);
             await user.save();
-            const reqUser = await User.findById(data.userId).select({name: 1, profilePhotos: 1, friendRequest: 1})
+            const reqUser = await User.findById(data.userId).select({ name: 1, profilePhotos: 1, friendRequest: 1 })
             reqUser.friendRequest.push(data.friendsId);
             await reqUser.save();
 
@@ -39,6 +39,14 @@ class Friend {
         } catch (err) {
             console.log("error on friendRequest function", err);
             return false;
+        }
+    }
+
+    async getFriendRequests(req, res) {
+        try {
+            res.json({result: await User.findById(req.body.userId).populate("friendRequest","name email gender profilePhotos").select({name: 1})});
+        } catch(error) {
+            throw new Error("Error on getFriendRequests",error);
         }
     }
 }
