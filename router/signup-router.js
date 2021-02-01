@@ -60,7 +60,7 @@ class SignUpRouter {
             expiresIn: "20d",
         });
         res.cookie("x-access-token", token);
-        updateOnlineToTrue(req.body.userId)
+        // updateOnlineToTrue(req.body.userId)
         res.json({ userId: user._id, email: user.email, token: token, tokenExpiration: 1, log: true });
     }
     sendRegistCode(req, res) {

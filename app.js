@@ -1,3 +1,5 @@
+require("dotenv").config();
+const port = process.env.PORT || 3000;
 const {
   app,
   express,
@@ -30,7 +32,7 @@ app.set("views", path.join(__dirname + "/front", "views"));
 app.set("view engine", "html");
 
 // server
-server.listen(3000, () => {
+server.listen(port, () => {
   console.log("server listening port-> 3000");
 });
 
