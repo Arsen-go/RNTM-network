@@ -62,11 +62,15 @@ app.post("/admin/updateUser", router.updateUser);
 
 app.post("/getSocialUser", router.showSocialUser);
 
-// app.post('/ConfirmFrienqRequest', ConfirmRequest);
+app.post('/confirmFriendRequest', router.confirmFriendRequest);
 
 app.post("/editProfileImg", upload.single("edit"), router.changeProfileImage);
 
 app.post("/getProfilePhoto", router.getProfileImage);
+
+app.post("/getUserAllPost", router.getUserAllPost);
+
+app.post("/deletePost", router.deletePost);
 
 app.post("/home/myPageInfo", router.getHomePageInfo);
 

@@ -1,8 +1,6 @@
-
-const form = document.getElementById("edit-phto")
-
 let userId = localStorage.getItem('userId')
 //const socket = io()
+let myProfilePhoto = "";
 function f() {
     const fileField = document.querySelectorAll('input[type="file"]')[1];
     const formData = new FormData();
@@ -41,6 +39,7 @@ fetch('/getProfilePhoto', {
         rimg.src = `/images/resources/${result.imageName}`;
         rimg.style.width = "35px";
         document.getElementById("userName").innerHTML = result.userName;
+        myProfilePhoto = result.imageName;
     })
     .catch(error => {
         console.log('Error:', error);

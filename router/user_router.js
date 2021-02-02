@@ -34,11 +34,33 @@ async function showSocialUser(req, res) {
 
 async function getHomePageInfo(req, res) {
   try {
-    let result = await User.findById(req.body.userId).populate("friendRequest","name profilePhotos gender").select({ name: 1, message: 1, friend: 1, profilePhotos: 1, friendRequest: 1 });
+    let result = await User.findById(req.body.userId).populate("friendRequest", "name profilePhotos gender").select({ name: 1, message: 1, friend: 1, profilePhotos: 1, friendRequest: 1 });
     res.json({ friendsLength: result.friend.length, messagesLength: result.message.length, name: result.name, photo: result.profilePhotos, friendRequest: result.friendRequest });
   } catch (err) {
     console.log("Error on getHomePageInfo", err);
     throw new Error("Error on getHomePage info");
+  }
+}
+
+async function getUserAllPost(req, res) {
+  try {
+    const result = await Post.find({ author: req.body.userId }).populate({
+      path: "author",
+      model: User,
+      select: "name profilePhotos",
+    }).populate({
+      path: "comment",
+      model: PostComment,
+      select: "commentText createdAt",
+      populate: {
+        path: "author",
+        model: User,
+        select: "name profilePhotos",
+      },
+    }).sort({ createdAt: 1 });
+    res.json({ result: result });
+  } catch (error) {
+    throw new Error("Error on getting all user posts");
   }
 }
 
@@ -121,6 +143,15 @@ async function allPost(req, res) {
   }
 }
 
+async function deletePost(req, res) {
+  try {
+    await Post.findByIdAndDelete(req.body.postId);
+    res.json({result: true, postId: req.body.postId});
+  } catch (error) {
+    throw new Error("Error to delete user post");
+  }
+}
+
 async function getAllLikesViewsDislikesCommentsLength(req, res) {
   try {
     const result = await Post.find({ author: req.body.userId }).select({ like: 1, view: 1, dislike: 1, comment: 1 });
@@ -135,8 +166,10 @@ module.exports = {
   changePassword,
   showSocialUser,
   getHomePageInfo,
+  getUserAllPost,
   addFriendList,
   addPost,
+  deletePost,
   allPost,
   getAllLikesViewsDislikesCommentsLength,
 };
