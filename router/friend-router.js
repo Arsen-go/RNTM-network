@@ -1,18 +1,19 @@
 const { User } = require("../models");
 
 class Friend {
-    async ConfirmRequest(req, res) {
-        let { from, to } = req.body
+    async confirmFriendRequest(req, res) {
         try {
-            let user = await User.findOne({ _id: from }).select({ friendRequest: 1, friend: 1 });
-            user.friend.push(to)
-            user.save((err) => { if (err) console.log(err) })
-            let UserFriend = await User.findOne({ _id: to }).select({ friend: 1, name: 1, profilePhotos: 1 });
+            let user = await User.findById(req.body.userId).select({ friendRequest: 1, friend: 1 });
+            user.friendRequest.pull(req.body.requestId);
+            user.friend.push(req.body.requestId);
+            await user.save();
 
-            UserFriend.friend.push(from)
-            UserFriend.save();
-            res.json({ message: `Now ${UserFriend.name} is your firend `, imageName: UsUserFriender.profilePhotos })
+            let reqUser = await User.findById(req.body.requestId).select({ friendRequest: 1, friend: 1 });
+            reqUser.friendRequest.pull(req.body.userId);
+            reqUser.friend.push(req.body.userId);
+            await reqUser.save()
 
+            res.json({ result: true, requsetId: req.body.requsetId });
         } catch (err) {
             console.log("error on confirmRequest", err);
         }
@@ -44,9 +45,27 @@ class Friend {
 
     async getFriendRequests(req, res) {
         try {
-            res.json({result: await User.findById(req.body.userId).populate("friendRequest","name email gender profilePhotos").select({name: 1})});
-        } catch(error) {
-            throw new Error("Error on getFriendRequests",error);
+            res.json({ result: await User.findById(req.body.userId).populate("friendRequest", "name email gender profilePhotos").select({ name: 1 }) });
+        } catch (error) {
+            throw new Error("Error on getFriendRequests", error);
+        }
+    }
+
+    async getUserFriends(req, res) {
+        try {
+            const result = await User.findById(req.body.userId).populate("friend", "name profilePhotos gender").select({ _id: 1 });
+            res.json(result);
+        } catch (error) {
+            throw new Error("Error on getting user all friends");
+        }
+    }
+
+    async getRandomUsers(req, res) {
+        try {
+            const result = await User.find().select({name: 1, profilePhotos: 1, gender: 1});
+            res.json(result);
+        } catch (error) {
+            throw new Error("Error on getting random users", error);
         }
     }
 }

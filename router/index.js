@@ -6,12 +6,15 @@ const {
   updateUser,
 } = require("./admin_router");
 const { addUser, loginUser, sendRegistCode } = require("./signup-router");
-const { getInfoUser, changePassword, showSocialUser, getHomePageInfo, addFriendList, addPost, allPost, getAllLikesViewsDislikesCommentsLength } = require("./user_router");
+const { getInfoUser, changePassword, deletePost, showSocialUser, getHomePageInfo, getUserAllPost, addFriendList, addPost, allPost, getAllLikesViewsDislikesCommentsLength } = require("./user_router");
 const { changeProfileImage, getProfileImage } = require("./image_router");
-const {friendRequest, getFriendRequests} = require("./friend-router");
+const { friendRequest, getFriendRequests, confirmFriendRequest, getUserFriends, getRandomUsers } = require("./friend-router");
 
 module.exports = {
   friendRequest,
+  getUserFriends,
+  getRandomUsers,
+  confirmFriendRequest,
   getFriendRequests,
   showAllUsers,
   deleteUser,
@@ -27,8 +30,10 @@ module.exports = {
   changeProfileImage,
   getProfileImage,
   getHomePageInfo,
+  getUserAllPost,
   addFriendList,
   addPost,
+  deletePost,
   allPost,
   getAllLikesViewsDislikesCommentsLength,
 };
