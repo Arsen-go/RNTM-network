@@ -83,3 +83,7 @@ app.post("/getHomePagePost", router.allPost);
 app.post("/home/likesDislikesViewsComments", router.getAllLikesViewsDislikesCommentsLength);
 
 app.post("/friendRequests", router.getFriendRequests);
+
+app.post("/friend/getUserFriends", router.getUserFriends);
+
+app.get("/friend/getRandomUsers", router.getRandomUsers);

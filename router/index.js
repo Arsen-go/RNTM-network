@@ -8,10 +8,12 @@ const {
 const { addUser, loginUser, sendRegistCode } = require("./signup-router");
 const { getInfoUser, changePassword, deletePost, showSocialUser, getHomePageInfo, getUserAllPost, addFriendList, addPost, allPost, getAllLikesViewsDislikesCommentsLength } = require("./user_router");
 const { changeProfileImage, getProfileImage } = require("./image_router");
-const { friendRequest, getFriendRequests, confirmFriendRequest } = require("./friend-router");
+const { friendRequest, getFriendRequests, confirmFriendRequest, getUserFriends, getRandomUsers } = require("./friend-router");
 
 module.exports = {
   friendRequest,
+  getUserFriends,
+  getRandomUsers,
   confirmFriendRequest,
   getFriendRequests,
   showAllUsers,

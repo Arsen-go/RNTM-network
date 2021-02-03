@@ -50,6 +50,24 @@ class Friend {
             throw new Error("Error on getFriendRequests", error);
         }
     }
+
+    async getUserFriends(req, res) {
+        try {
+            const result = await User.findById(req.body.userId).populate("friend", "name profilePhotos gender").select({ _id: 1 });
+            res.json(result);
+        } catch (error) {
+            throw new Error("Error on getting user all friends");
+        }
+    }
+
+    async getRandomUsers(req, res) {
+        try {
+            const result = await User.find().select({name: 1, profilePhotos: 1, gender: 1});
+            res.json(result);
+        } catch (error) {
+            throw new Error("Error on getting random users", error);
+        }
+    }
 }
 
 module.exports = new Friend();
